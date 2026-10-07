@@ -3,75 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Mobile Portal | National AI Policy Impact Simulator | Government of India</title>
-  <meta name="description" content="Official Mobile Portal for National AI Public Policy Impact Simulator & Optimization Platform — Single Window for Indian Governance, Causal Inference, and Welfare Simulation.">
-  <meta name="theme-color" content="#040914">
-
-  <!-- Mobile App Manifest & Web App Capabilities -->
+  <title>india.gov.in | National Portal of India (Mobile)</title>
+  <meta name="description" content="National Portal of India — Single Window for Indian Governance, Citizen Services, and AI Policy Impact Simulator.">
+  <meta name="theme-color" content="#071026">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Policy Sim">
 
   <style>
     /* =====================================================================
-       MOBILE DESIGN SYSTEM - NATIONAL PORTAL OF INDIA (india.gov.in)
-       Target Viewport: 360px - 430px (iPhone, Android)
+       EXACT COMPUTER THEME ADAPTED TO MOBILE (india.gov.in)
+       Colors, typography, badges, gradients match desktop exactly.
        ===================================================================== */
     :root {
-      --gov-saffron: #FF9933;
-      --gov-white: #FFFFFF;
-      --gov-green: #138808;
-      --gov-navy: #000080;
+      --gov-saffron: #F15B25;
+      --gov-saffron-light: #ff9800;
       --gov-crimson: #E31E2E;
-      --gov-crimson-hover: #c41825;
+      --gov-crimson-dark: #c30112;
+      --gov-navy-dark: #071026;
+      --gov-navy-card: #111c33;
+      --gov-navy-border: #1e2e4a;
       
       /* Dark Theme (Default) */
-      --bg-canvas: #040914;
-      --bg-surface: #0a1224;
-      --bg-surface-elevated: #111c33;
-      --border-subtle: #1e2e4a;
-      --border-strong: #2a3f66;
-      --text-primary: #ffffff;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --card-overlay: rgba(10, 18, 36, 0.78);
-      --input-bg: #0d172e;
-      
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-full: 9999px;
-      
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-      --shadow-lg: 0 8px 30px rgba(0,0,0,0.6);
+      --bg-body: #071026;
+      --bg-card: #111c33;
+      --bg-card-subtle: #0d172e;
+      --border-card: #1e2e4a;
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --header-bg: rgba(7, 16, 38, 0.92);
+      --search-bg: #111c33;
+      --search-input-color: #ffffff;
+      --search-select-bg: #0d1527;
+      --search-select-color: #e2e8f0;
       
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     [data-theme="light"] {
-      --bg-canvas: #f8fafc;
-      --bg-surface: #ffffff;
-      --bg-surface-elevated: #f1f5f9;
-      --border-subtle: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #64748b;
-      --card-overlay: rgba(255, 255, 255, 0.88);
-      --input-bg: #f8fafc;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 24px rgba(15, 76, 129, 0.12);
-    }
-
-    /* Light mode background photo styling */
-    [data-theme="light"] body {
-      background-image: url('images/lightmodebg.png');
-      background-attachment: fixed;
-      background-size: cover;
-      background-position: center;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f1f5f9;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --header-bg: rgba(255, 255, 255, 0.92);
+      --search-bg: #ffffff;
+      --search-input-color: #1e293b;
+      --search-select-bg: #f8fafc;
+      --search-select-color: #475569;
     }
 
     * {
@@ -79,270 +61,522 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 'Noto Sans', Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: var(--bg-canvas);
-      color: var(--text-primary);
+      background-color: var(--bg-body);
+      color: var(--text-main);
       min-height: 100vh;
-      padding-top: calc(var(--safe-top) + 54px);
-      padding-bottom: calc(var(--safe-bottom) + 72px);
+      padding-bottom: calc(var(--safe-bottom) + 76px);
       transition: background-color 0.25s ease, color 0.25s ease;
       overflow-x: hidden;
     }
 
-    /* ── Sticky Top Mobile Header ── */
-    .mobile-header {
-      position: fixed;
+    /* ── Sticky Top Header with 4 Icons ── */
+    .top-header {
+      position: sticky;
       top: 0;
       left: 0;
       right: 0;
-      height: 54px;
-      padding-top: var(--safe-top);
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
+      z-index: 1000;
+      padding: calc(var(--safe-top) + 8px) 14px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-left: 14px;
-      padding-right: 14px;
-      z-index: 1000;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--header-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-card);
     }
 
-    .mobile-header-left {
+    /* Official Government Logo Card (Left) */
+    .gov-logo-badge {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      background: #ffffff;
+      padding: 4px 10px 4px 6px;
+      border-radius: 7px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      text-decoration: none;
     }
 
-    .emblem-img {
-      height: 32px;
+    .gov-logo-img {
+      height: 30px;
       width: auto;
       object-fit: contain;
     }
 
-    .mobile-header-titles {
+    .gov-logo-text {
       display: flex;
       flex-direction: column;
-    }
-
-    .header-super {
-      font-size: 9.5px;
-      font-weight: 800;
-      color: var(--gov-saffron);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .header-main {
-      font-size: 13.5px;
-      font-weight: 900;
-      color: var(--text-primary);
       line-height: 1.1;
     }
 
-    .mobile-header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-surface-elevated);
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    /* ── Mobile Tricolor Bar ── */
-    .tricolor-stripe {
-      height: 3px;
-      width: 100%;
-      background: linear-gradient(90deg, #FF9933 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #138808 66.6%);
-    }
-
-    /* ── Mobile Container ── */
-    .mobile-container {
-      padding: 14px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    /* ── Hero Banner ── */
-    .hero-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(227, 30, 46, 0.12);
-      color: var(--gov-crimson);
-      border: 1px solid rgba(227, 30, 46, 0.3);
-      padding: 3px 8px;
-      border-radius: var(--radius-full);
-      font-size: 10px;
+    .gov-logo-hi {
+      font-size: 8.5px;
       font-weight: 800;
-      margin-bottom: 10px;
+      color: #0c2340;
+      letter-spacing: 0.2px;
     }
 
-    .hero-title {
-      font-size: 18px;
+    .gov-logo-en {
+      font-size: 7.5px;
       font-weight: 900;
-      line-height: 1.25;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-    }
-
-    .hero-desc {
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-
-    .pm-quote-box {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      background: var(--bg-surface-elevated);
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      border-left: 3px solid var(--gov-saffron);
-      margin-bottom: 12px;
-    }
-
-    .pm-photo {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1.5px solid var(--gov-saffron);
-      flex-shrink: 0;
-    }
-
-    .pm-quote-text {
-      font-size: 11px;
-      font-style: italic;
-      color: var(--text-secondary);
-      line-height: 1.4;
-    }
-
-    .pm-quote-name {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-top: 3px;
-      font-style: normal;
-    }
-
-    /* ── Live Stats Pill Strip ── */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .stat-pill {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .stat-val {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--gov-saffron);
-      display: block;
-    }
-
-    .stat-lbl {
-      font-size: 9.5px;
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
+      color: #0c2340;
       letter-spacing: 0.3px;
     }
 
-    /* ── Schemes Carousel Section ── */
-    .section-header {
+    /* Top Right Controls (Refer to Image 2 & 3) */
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .control-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(15, 76, 129, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.15s ease;
+      font-size: 15px;
+    }
+
+    [data-theme="light"] .control-btn {
+      background: #0f4c81;
+      border-color: #0a355c;
+      color: #ffffff;
+    }
+
+    .control-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* Language Button Pill */
+    .lang-pill-btn {
+      height: 36px;
+      padding: 0 11px;
+      border-radius: 8px;
+      background: rgba(15, 76, 129, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ff9800;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.15s ease;
+    }
+
+    [data-theme="light"] .lang-pill-btn {
+      background: #0f4c81;
+      border-color: #0a355c;
+      color: #ffb74d;
+    }
+
+    .lang-pill-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* ── Hero Banner Section ── */
+    .hero-banner-section {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      padding: 16px 14px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    /* Background image: Reduced size, contained focal area */
+    [data-theme="dark"] .hero-banner-section {
+      background:
+        linear-gradient(180deg, rgba(5, 10, 24, 0.35) 0%, rgba(8, 16, 38, 0.45) 55%, rgba(7, 16, 38, 0.95) 100%),
+        url("images/india_gate_hero.jpg") center top / cover no-repeat;
+    }
+
+    [data-theme="light"] .hero-banner-section {
+      background:
+        linear-gradient(180deg, rgba(6, 18, 45, 0.32) 0%, rgba(6, 18, 45, 0.15) 50%, rgba(248, 250, 252, 0.96) 100%),
+        url("images/lightmodebg.png") center top / cover no-repeat;
+    }
+
+    /* Ashoka Lion Emblem Lockup */
+    .emblem-lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .emblem-main-img {
+      height: 72px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.85)) brightness(1.1);
+    }
+
+    .satyamev-text {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* Main india.gov.in Title */
+    .portal-main-title {
+      font-size: clamp(38px, 9vw, 50px);
+      font-weight: 900;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      color: #ffffff;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.8);
+      margin: 4px 0 6px;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .portal-main-title span.dot {
+      color: var(--gov-saffron-light);
+    }
+
+    /* National Portal of India Badge */
+    .national-badge {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.97);
+      color: #0f172a;
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 20px;
+      margin-top: 4px;
+      border-bottom: 3px solid var(--gov-saffron);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    }
+
+    .portal-tagline {
+      font-size: 14.5px;
+      color: rgba(255, 255, 255, 0.95);
+      margin-top: 10px;
+      font-weight: 600;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+
+    /* ── Reduced Width Search Bar (Exact from Screenshot) ── */
+    .search-container {
+      width: 100%;
+      max-width: 390px;
+      margin: 18px auto 0;
+      display: flex;
+      align-items: stretch;
+      background: var(--search-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid var(--border-card);
+    }
+
+    .search-icon-box {
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      color: #94a3b8;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 12px 10px;
+      font-size: 13px;
+      color: var(--search-input-color);
+      background: transparent;
+      min-width: 0;
+    }
+
+    .search-select {
+      border: none;
+      border-left: 1px solid var(--border-card);
+      outline: none;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--search-select-color);
+      background: var(--search-select-bg);
+      cursor: pointer;
+      max-width: 105px;
+    }
+
+    .search-submit-btn {
+      background: var(--gov-crimson);
+      color: #ffffff;
+      border: none;
+      width: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+
+    .search-submit-btn:active {
+      background: var(--gov-crimson-dark);
+    }
+
+    /* ── Key National Schemes Horizontal Pill Scroll ── */
+    .schemes-pills-row {
+      width: 100%;
+      max-width: 390px;
+      margin: 14px auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .schemes-pills-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    }
+
+    .schemes-pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .schemes-pills-scroll::-webkit-scrollbar { display: none; }
+
+    .scheme-chip {
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 5px 12px;
+      border-radius: 16px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      transition: all 0.15s ease;
+    }
+
+    .scheme-chip:active {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0.96);
+    }
+
+    .chip-arrow-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── Reduced Width Modi Quotation Bar (Exact from Screenshot) ── */
+    .modi-quote-card {
+      width: 100%;
+      max-width: 390px;
+      margin: 14px auto 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .modi-avatar-box {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--border-card);
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .modi-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+    }
+
+    .modi-quote-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .modi-quote-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.45;
+      position: relative;
+    }
+
+    .quote-mark {
+      color: var(--gov-crimson);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .modi-quote-line {
+      width: 32px;
+      height: 2px;
+      background: var(--gov-crimson);
+      margin: 6px 0 4px;
+    }
+
+    .modi-quote-source {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .modi-quote-date {
+      font-size: 9.5px;
+      color: var(--text-dim);
+    }
+
+    /* ── 6 Stats Cards Grid (3 Columns x 2 Rows) ── */
+    .stats-card-grid {
+      width: 100%;
+      max-width: 390px;
+      margin: 14px auto 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-tile.highlighted {
+      background: rgba(37, 99, 235, 0.08);
+      border: 1.5px solid #38bdf8;
+    }
+
+    .stat-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .stat-number {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .stat-tile.highlighted .stat-number {
+      color: #0284c7;
+    }
+    [data-theme="dark"] .stat-tile.highlighted .stat-number {
+      color: #38bdf8;
+    }
+
+    .stat-label {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      margin-top: 3px;
+      line-height: 1.2;
+    }
+
+    /* ── Section Container ── */
+    .section-wrapper {
+      width: 100%;
+      max-width: 390px;
+      margin: 20px auto 0;
+      padding: 0 4px;
+    }
+
+    .section-title-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-      margin-top: 6px;
     }
 
-    .section-title {
-      font-size: 15px;
+    .section-title-text {
+      font-size: 14.5px;
       font-weight: 900;
-      color: var(--text-primary);
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .carousel-nav-btn-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    .nav-arrow-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .carousel-wrapper {
+    /* ── Schemes Carousel Component ── */
+    .carousel-container {
       position: relative;
       width: 100%;
-      height: 260px;
-      border-radius: var(--radius-lg);
+      height: 240px;
+      border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 16px;
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-card);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
     .carousel-slide {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transition: opacity 0.6s ease-in-out;
+      transition: opacity 0.5s ease-in-out;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -353,681 +587,552 @@
       z-index: 2;
     }
 
-    .slide-overlay {
-      background: linear-gradient(180deg, rgba(4,9,20,0.1) 0%, rgba(4,9,20,0.85) 60%, rgba(4,9,20,0.96) 100%);
-      padding: 16px;
+    .carousel-overlay {
+      background: linear-gradient(180deg, rgba(7,16,38,0.2) 0%, rgba(7,16,38,0.85) 55%, rgba(7,16,38,0.98) 100%);
+      padding: 14px;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
 
-    [data-theme="light"] .slide-overlay {
-      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.88) 55%, rgba(255,255,255,0.98) 100%);
+    [data-theme="light"] .carousel-overlay {
+      background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.88) 50%, rgba(255,255,255,0.98) 100%);
     }
 
-    .slide-badge {
+    .carousel-badge {
       display: inline-block;
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 4px;
       background: var(--gov-saffron);
       color: #000;
+      margin-bottom: 4px;
+    }
+
+    .carousel-scheme-name {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 3px;
+    }
+
+    .carousel-scheme-desc {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
       margin-bottom: 6px;
     }
 
-    .slide-title {
-      font-size: 16px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-
-    .slide-meta {
-      font-size: 11px;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-
-    .slide-budget-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
+    .carousel-budget-badge {
+      font-size: 9.5px;
       font-weight: 800;
       color: #10b981;
       background: rgba(16, 185, 129, 0.12);
-      padding: 3px 8px;
-      border-radius: var(--radius-full);
+      padding: 2px 6px;
+      border-radius: 12px;
+      display: inline-block;
     }
 
-    .carousel-dots {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      display: flex;
-      gap: 4px;
-      z-index: 10;
+    /* ── AI Policy Evaluator Panel ── */
+    .evaluator-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      margin-top: 10px;
     }
 
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      transition: all 0.2s ease;
-    }
-
-    .dot.active {
-      width: 14px;
-      border-radius: 3px;
-      background: var(--gov-crimson);
-    }
-
-    /* ── Policy Evaluator Panel ── */
-    .evaluator-panel {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .domain-select-wrapper {
+    .domain-dropdown-bar {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card-subtle);
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 700;
+      outline: none;
       margin-bottom: 10px;
     }
 
-    .domain-label {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
-      display: block;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .domain-select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-strong);
-      background: var(--bg-surface-elevated);
-      color: var(--text-primary);
-      font-size: 13px;
-      font-weight: 700;
-      outline: none;
-    }
-
-    .query-input-wrapper {
+    .policy-input-row {
       display: flex;
       flex-direction: column;
       gap: 8px;
       margin-bottom: 12px;
     }
 
-    .query-input {
+    .policy-text-input {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-strong);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-size: 13px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card-subtle);
+      color: var(--text-main);
+      font-size: 12.5px;
       font-weight: 600;
       outline: none;
     }
 
-    .query-input:focus {
-      border-color: var(--gov-crimson);
-    }
-
-    .evaluate-btn {
+    .run-eval-btn {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
+      border-radius: 8px;
       background: var(--gov-crimson);
       color: #ffffff;
       border: none;
-      border-radius: var(--radius-md);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(227, 30, 46, 0.35);
-    }
-
-    .evaluate-btn:active {
-      transform: scale(0.98);
-    }
-
-    /* Preset Chips */
-    .preset-chips-scroll {
-      display: flex;
       gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 14px;
-      scrollbar-width: none;
-    }
-    .preset-chips-scroll::-webkit-scrollbar { display: none; }
-
-    .preset-chip {
-      white-space: nowrap;
-      padding: 5px 10px;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-full);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(227, 30, 46, 0.35);
+      transition: all 0.15s ease;
     }
 
-    /* ── Pipeline Steps Indicator ── */
-    .pipeline-tracker {
-      background: var(--bg-surface-elevated);
-      border-radius: var(--radius-md);
-      padding: 10px 12px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border-subtle);
+    .run-eval-btn:active {
+      transform: scale(0.98);
+      background: var(--gov-crimson-dark);
     }
 
-    .tracker-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .tracker-title {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
-
-    .tracker-step-badge {
-      font-size: 9px;
-      font-weight: 800;
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .tracker-bar-bg {
-      height: 4px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .tracker-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #FF9933, #E31E2E);
-      width: 100%;
-      transition: width 0.3s ease;
-    }
-
-    /* ── The Two Overview Cards ── */
-    .overview-grid {
+    /* ── Two Primary Overview Boxes ── */
+    .primary-overview-col {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .overview-box {
-      border-radius: var(--radius-md);
-      padding: 14px;
-      position: relative;
+      gap: 10px;
+      margin: 12px 0;
     }
 
     .box-benefited {
       background: rgba(16, 185, 129, 0.08);
       border: 1.5px solid rgba(16, 185, 129, 0.35);
+      border-radius: 10px;
+      padding: 12px;
     }
 
     .box-loss {
       background: rgba(239, 68, 68, 0.08);
       border: 1.5px solid rgba(239, 68, 68, 0.35);
+      border-radius: 10px;
+      padding: 12px;
     }
 
-    .overview-box-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .overview-box-title {
-      font-size: 12.5px;
+    .box-title-bar {
+      font-size: 11.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+      margin-bottom: 4px;
     }
+    .box-benefited .box-title-bar { color: #10b981; }
+    .box-loss .box-title-bar { color: #ef4444; }
 
-    .box-benefited .overview-box-title { color: #10b981; }
-    .box-loss .overview-box-title { color: #ef4444; }
-
-    .overview-cohort-highlight {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-
-    .overview-stat-pill {
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-
-    .box-benefited .overview-stat-pill {
-      background: rgba(16, 185, 129, 0.16);
-      color: #10b981;
-    }
-
-    .box-loss .overview-stat-pill {
-      background: rgba(239, 68, 68, 0.16);
-      color: #ef4444;
-    }
-
-    .overview-bullet-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .overview-bullet-item {
-      font-size: 11.5px;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      display: flex;
-      gap: 6px;
-      align-items: flex-start;
-    }
-
-    /* ── 20 Metrics Section ── */
-    .metrics-grid-2col {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .metric-card {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 110px;
-    }
-
-    .metric-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 6px;
-    }
-
-    .metric-badge {
-      font-size: 8px;
-      font-weight: 900;
-      padding: 2px 5px;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-
-    .badge-observed { background: #059669; color: #fff; }
-    .badge-modelled { background: #2563eb; color: #fff; }
-    .badge-projected { background: #7c3aed; color: #fff; }
-
-    .metric-card-label {
-      font-size: 10.5px;
-      font-weight: 800;
-      color: var(--text-secondary);
-      line-height: 1.25;
-      margin-bottom: 6px;
-    }
-
-    .metric-card-value {
-      font-size: 16px;
-      font-weight: 900;
-      color: #10b981;
-      line-height: 1;
-      margin-bottom: 3px;
-    }
-
-    .metric-card-value.negative {
-      color: #ef4444;
-    }
-
-    .metric-card-ci {
-      font-size: 9px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* ── 5 Aspects Tab Bar ── */
-    .aspects-tabs-scroll {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 10px;
-      scrollbar-width: none;
-    }
-    .aspects-tabs-scroll::-webkit-scrollbar { display: none; }
-
-    .aspect-tab {
-      white-space: nowrap;
-      padding: 6px 12px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-subtle);
-      background: var(--bg-surface-elevated);
-      color: var(--text-secondary);
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .aspect-tab.active {
-      background: var(--gov-saffron);
-      color: #000;
-      border-color: var(--gov-saffron);
-    }
-
-    .aspect-card-body {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      margin-bottom: 16px;
-    }
-
-    .aspect-card-title {
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .aspect-insight-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .aspect-insight-item {
-      font-size: 11px;
-      color: var(--text-secondary);
-      line-height: 1.45;
-      display: flex;
-      gap: 6px;
-    }
-
-    /* ── Report Generation Button ── */
-    .print-report-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: var(--radius-md);
-      background: transparent;
-      border: 1.5px solid var(--gov-saffron);
-      color: var(--gov-saffron);
+    .box-cohort-text {
       font-size: 13px;
       font-weight: 800;
-      cursor: pointer;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .box-pill-gain {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .box-benefited .box-pill-gain { background: rgba(16,185,129,0.18); color: #10b981; }
+    .box-loss .box-pill-gain { background: rgba(239,68,68,0.18); color: #ef4444; }
+
+    .box-bullets-list {
+      list-style: none;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* ── 20 Quantitative Metrics Grid (2 Columns) ── */
+    .metrics-2col-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin-top: 10px;
     }
 
-    .print-report-btn:active {
-      background: rgba(255, 153, 51, 0.1);
-    }
-
-    /* ── Sticky Mobile Bottom Navigation Bar ── */
-    .mobile-bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      padding-bottom: var(--safe-bottom);
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 1000;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .nav-item {
+    .metric-card-tile {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 9px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      min-height: 98px;
+    }
+
+    .metric-top-row {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 3px;
-      color: var(--text-muted);
-      text-decoration: none;
+      margin-bottom: 3px;
+    }
+
+    .badge-pill {
+      font-size: 7.5px;
+      font-weight: 900;
+      padding: 2px 4px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .badge-obs { background: #059669; color: #fff; }
+    .badge-mod { background: #2563eb; color: #fff; }
+    .badge-proj { background: #7c3aed; color: #fff; }
+
+    .metric-card-lbl {
       font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
+      font-weight: 800;
+      color: var(--text-muted);
+      line-height: 1.2;
     }
 
-    .nav-item.active {
-      color: var(--gov-crimson);
+    .metric-card-val {
+      font-size: 15px;
+      font-weight: 900;
+      color: #10b981;
+      margin-top: 4px;
+    }
+    .metric-card-val.neg { color: #ef4444; }
+
+    .metric-card-ci-val {
+      font-size: 8.5px;
+      color: var(--text-dim);
+      font-weight: 600;
     }
 
-    .nav-icon {
-      font-size: 17px;
-    }
-
-    /* ── Fullscreen Report Modal ── */
-    .report-modal {
-      display: none;
+    /* ── UPSCALE BOTTOM TASK BAR WITH GLOW EFFECT (NO STUPID ICONS) ── */
+    .upscale-bottom-nav {
       position: fixed;
-      top: 0;
+      bottom: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: var(--bg-surface);
+      height: 56px;
+      padding-bottom: var(--safe-bottom);
+      background: var(--header-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 1000;
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+
+    .task-tab-btn {
+      flex: 1;
+      height: 38px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+    }
+
+    /* Upscale Responsive Glow Effect on Active Tab */
+    .task-tab-btn.active {
+      background: rgba(227, 30, 46, 0.16);
+      border: 1px solid var(--gov-crimson);
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(227, 30, 46, 0.55), inset 0 0 8px rgba(227, 30, 46, 0.25);
+      text-shadow: 0 0 8px rgba(227, 30, 46, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .task-tab-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* ── Fullscreen Cabinet Modal ── */
+    .report-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-card);
       z-index: 2000;
       overflow-y: auto;
-      padding: 20px 16px;
+      padding: calc(var(--safe-top) + 20px) 16px 30px;
     }
-
-    .report-modal.open {
-      display: block;
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      font-size: 16px;
-      cursor: pointer;
-    }
+    .report-drawer.active { display: block; }
   </style>
 </head>
 <body>
 
-  <!-- Sticky Top Mobile Header -->
-  <header class="mobile-header">
-    <div class="mobile-header-left">
-      <img src="images/emblem.png" alt="National Emblem of India" class="emblem-img">
-      <div class="mobile-header-titles">
-        <span class="header-super">Government of India</span>
-        <span class="header-main">AI Policy Simulator</span>
+  <!-- Sticky Top Header with 4 Exact Buttons (Refer to Image 2 & 3) -->
+  <header class="top-header">
+    <!-- Left: Official Government of India Badge -->
+    <a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer" class="gov-logo-badge">
+      <img src="images/emblem.png" alt="Emblem" class="gov-logo-img">
+      <div class="gov-logo-text">
+        <span class="gov-logo-hi">भारत सरकार</span>
+        <span class="gov-logo-en">GOVERNMENT OF INDIA</span>
       </div>
-    </div>
-    <div class="mobile-header-right">
-      <!-- Language Selector -->
-      <select id="langSelect" style="background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 4px 6px; font-size: 11px; font-weight: 700;">
-        <option value="en">EN</option>
-        <option value="hi">हिन्दी</option>
-        <option value="ta">தமிழ்</option>
-      </select>
-      <!-- Dark / Light Theme Toggle -->
-      <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">🌙</button>
+    </a>
+
+    <!-- Right Controls: Calendar, Moon/Sun, Language, Hamburger (Exact from Image 2 & 3) -->
+    <div class="top-controls">
+      <!-- 1. Calendar Button -->
+      <button class="control-btn" id="btnCalendar" title="Gazette Calendar">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      </button>
+
+      <!-- 2. Dark / Light Mode Toggle Button -->
+      <button class="control-btn" id="btnThemeToggle" title="Toggle Dark/Light Mode">
+        <svg id="themeIconSvg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <!-- 3. Language Pill Button -->
+      <button class="lang-pill-btn" id="btnLanguage">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+        <span id="langLabel">हिन्दी</span>
+      </button>
+
+      <!-- 4. Hamburger / Menu Button -->
+      <button class="control-btn" id="btnMegaMenu" title="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
     </div>
   </header>
 
-  <!-- Tricolor Accent Line -->
-  <div class="tricolor-stripe" style="position: fixed; top: 54px; left: 0; right: 0; z-index: 999;"></div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SECTION 1: HOME PAGE (EXACTLY REPLICATING IMAGE 3 & DESKTOP PORTAL)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <main id="tabContentHome">
 
-  <!-- Main Mobile Container -->
-  <main class="mobile-container">
+    <!-- Hero Section with Contained Background -->
+    <section class="hero-banner-section">
+      <!-- Emblem Lockup -->
+      <div class="emblem-lockup">
+        <img src="images/firefly.png" alt="Emblem of India" class="emblem-main-img" onerror="this.src='images/emblem.png'">
+        <span class="satyamev-text">सत्यमेव जयते</span>
+      </div>
 
-    <!-- 1. Government Hero Section -->
-    <section class="hero-card" id="homeSection">
-      <div class="hero-tag">🇮🇳 NITI Aayog Policy Portal</div>
-      <h1 class="hero-title" id="txtHeroTitle">AI Public Policy Impact Simulator</h1>
-      <p class="hero-desc" id="txtHeroDesc">
-        Empirical policy intelligence powered by <strong>Llama 3.1 8B</strong>, verified Government of India archives (data.gov.in, rbi.org.in), and 10,000 Monte Carlo stochastic iterations.
-      </p>
+      <!-- india.gov.in Large Title -->
+      <h1 class="portal-main-title">
+        india<span class="dot">.</span>gov<span class="dot">.</span>in
+      </h1>
 
-      <!-- Prime Minister Quote Box -->
-      <div class="pm-quote-box">
-        <img src="images/pm_photo.jpg" alt="Prime Minister Narendra Modi" class="pm-photo">
-        <div>
-          <p class="pm-quote-text" id="txtPmQuote">"When technology combines with national aspiration, policymaking becomes transparent, accountable, and impactful for the poorest citizen."</p>
-          <p class="pm-quote-name">Shri Narendra Modi • Prime Minister</p>
+      <!-- NATIONAL PORTAL OF INDIA Badge -->
+      <div class="national-badge">NATIONAL PORTAL OF INDIA</div>
+
+      <!-- Subtitle -->
+      <p class="portal-tagline">Where Government Information Converges</p>
+
+      <!-- Reduced Width Search Bar with Red Button -->
+      <form class="search-container" id="mainSearchForm" onsubmit="event.preventDefault(); switchMode('schemes');">
+        <div class="search-icon-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </div>
+        <input type="text" class="search-input" placeholder="Search for schemes, welfare policies...">
+        <select class="search-select">
+          <option>All Categories</option>
+          <option>Schemes & Welfare</option>
+          <option>Citizen Services</option>
+          <option>Datasets</option>
+        </select>
+        <button type="submit" class="search-submit-btn" title="Search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.4">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </form>
+
+      <!-- Key National Schemes Pills Row -->
+      <div class="schemes-pills-row">
+        <div class="schemes-pills-label">Key National Schemes :</div>
+        <div class="schemes-pills-scroll">
+          <button class="scheme-chip" onclick="switchMode('schemes')">MGNREGA</button>
+          <button class="scheme-chip" onclick="switchMode('schemes')">PM-KISAN</button>
+          <button class="scheme-chip" onclick="switchMode('schemes')">PM Garib Kalyan...</button>
+          <button class="scheme-chip" onclick="switchMode('schemes')">Ayushman Bharat</button>
+          <button class="chip-arrow-btn" onclick="switchMode('schemes')">❯</button>
         </div>
       </div>
     </section>
 
-    <!-- 2. Live National Welfare Indicators -->
-    <section class="stats-strip">
-      <div class="stat-pill">
-        <span class="stat-val">35</span>
-        <span class="stat-lbl" id="lblStat1">Sectors</span>
+    <!-- Modi Quotation Bar (Reduced Width, Exact from Image 3) -->
+    <div class="modi-quote-card">
+      <div class="modi-avatar-box">
+        <img src="images/pm_photo.jpg" alt="Hon'ble Prime Minister" class="modi-avatar-img">
       </div>
-      <div class="stat-pill">
-        <span class="stat-val">10,000</span>
-        <span class="stat-lbl" id="lblStat2">Iterations</span>
+      <div class="modi-quote-content">
+        <p class="modi-quote-text">
+          <span class="quote-mark">“</span>
+          India's Digital Public Infrastructure has demonstrated how technology can expand opportunity, improve governance, boost financial inclusion and deliver services for hundreds of millions of people.
+          <span class="quote-mark">”</span>
+        </p>
+        <div class="modi-quote-line"></div>
+        <div class="modi-quote-source">National Assembly of Seychelles</div>
+        <div class="modi-quote-date">28 June 2026</div>
       </div>
-      <div class="stat-pill">
-        <span class="stat-val">57</span>
-        <span class="stat-lbl" id="lblStat3">GOI Domains</span>
-      </div>
-    </section>
+    </div>
 
-    <!-- 3. Dynamic Sliding Schemes Carousel (5s interval) -->
-    <section id="schemesSection">
-      <div class="section-header">
-        <h2 class="section-title">⚡ National Welfare Schemes</h2>
-        <div class="carousel-nav-btn-group">
-          <button class="nav-arrow-btn" id="btnPrevScheme" aria-label="Previous Scheme">◀</button>
-          <button class="nav-arrow-btn" id="btnNextScheme" aria-label="Next Scheme">▶</button>
+    <!-- 6 Stats Cards (Exact 3x2 Grid from Image 3) -->
+    <div class="stats-card-grid">
+      <!-- 1 -->
+      <div class="stat-tile">
+        <span class="stat-icon">💻</span>
+        <span class="stat-number">13,994</span>
+        <span class="stat-label">ONLINE SERVICES</span>
+      </div>
+      <!-- 2 (Highlighted) -->
+      <div class="stat-tile highlighted" onclick="switchMode('simulator')">
+        <span class="stat-icon">📋</span>
+        <span class="stat-number">5,731</span>
+        <span class="stat-label">GOVT SCHEMES ⚙️</span>
+      </div>
+      <!-- 3 -->
+      <div class="stat-tile">
+        <span class="stat-icon">🤝</span>
+        <span class="stat-number">2,356</span>
+        <span class="stat-label">CITIZEN ENGAGEMENTS</span>
+      </div>
+      <!-- 4 -->
+      <div class="stat-tile">
+        <span class="stat-icon">🏛️</span>
+        <span class="stat-number">4,004</span>
+        <span class="stat-label">TOURIST PLACES</span>
+      </div>
+      <!-- 5 -->
+      <div class="stat-tile">
+        <span class="stat-icon">🏷️</span>
+        <span class="stat-number">1,207</span>
+        <span class="stat-label">ODOP PRODUCTS</span>
+      </div>
+      <!-- 6 -->
+      <div class="stat-tile">
+        <span class="stat-icon">📄</span>
+        <span class="stat-number">18</span>
+        <span class="stat-label">INFORMATION CATEGORIES</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SECTION 2: NATIONAL SCHEMES (DYNAMIC 5-SECOND SLIDING CAROUSEL)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section id="tabContentSchemes" style="display: none; padding-top: 10px;">
+    <div class="section-wrapper">
+      <div class="section-title-bar">
+        <h2 class="section-title-text">⚡ Flagship Welfare Schemes</h2>
+        <div style="display: flex; gap: 6px;">
+          <button class="chip-arrow-btn" id="btnCarPrev">◀</button>
+          <button class="chip-arrow-btn" id="btnCarNext">▶</button>
         </div>
       </div>
 
-      <div class="carousel-wrapper" id="carouselWrapper">
-        <div class="carousel-dots" id="carouselDots">
-          <span class="dot active"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-
-        <!-- Slide 1: Jal Jeevan Mission -->
+      <div class="carousel-container" id="mobileCarousel">
+        <!-- 1. JJM -->
         <div class="carousel-slide active" style="background-image: url('images/schemes/jjm.jpg');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Water & Sanitation</span>
-            <h3 class="slide-title">Jal Jeevan Mission (JJM)</h3>
-            <p class="slide-meta">Provides functional household tap water connections (FHTC) to every rural household with 55 litres per capita daily.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹70,000 Cr</span>
+          <div class="carousel-overlay">
+            <span class="carousel-badge">Water Resources</span>
+            <h3 class="carousel-scheme-name">Jal Jeevan Mission (JJM)</h3>
+            <p class="carousel-scheme-desc">Providing 55 litres per capita daily functional tap water to every rural household.</p>
+            <span class="carousel-budget-badge">💰 Budget: ₹70,000 Cr</span>
           </div>
         </div>
-
-        <!-- Slide 2: PM-KISAN -->
+        <!-- 2. PM-KISAN -->
         <div class="carousel-slide" style="background-image: url('images/schemes/pmkisan.jpg');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Agriculture</span>
-            <h3 class="slide-title">PM-KISAN Samman Nidhi</h3>
-            <p class="slide-meta">Direct income support of ₹6,000 per year via Direct Benefit Transfer (DBT) to 11 Crore landholding farmer families.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹60,000 Cr</span>
+          <div class="carousel-overlay">
+            <span class="carousel-badge">Agriculture</span>
+            <h3 class="carousel-scheme-name">PM-KISAN Samman Nidhi</h3>
+            <p class="carousel-scheme-desc">Direct Benefit Transfer of ₹6,000/year to 11 Crore landholding farmer families.</p>
+            <span class="carousel-budget-badge">💰 Budget: ₹60,000 Cr</span>
           </div>
         </div>
-
-        <!-- Slide 3: MGNREGA -->
+        <!-- 3. MGNREGA -->
         <div class="carousel-slide" style="background-image: url('images/schemes/mgnrega.avif');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Employment</span>
-            <h3 class="slide-title">MGNREGA Rural Employment</h3>
-            <p class="slide-meta">Statutory guarantee of 100 days of wage employment per financial year to rural manual worker households.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹86,000 Cr</span>
+          <div class="carousel-overlay">
+            <span class="carousel-badge">Rural Employment</span>
+            <h3 class="carousel-scheme-name">MGNREGA Guarantee</h3>
+            <p class="carousel-scheme-desc">100 days statutory wage-employment per year for rural adult manual workers.</p>
+            <span class="carousel-budget-badge">💰 Budget: ₹86,000 Cr</span>
           </div>
         </div>
-
-        <!-- Slide 4: PM Awas Yojana -->
+        <!-- 4. PMAY -->
         <div class="carousel-slide" style="background-image: url('images/schemes/pmawasyojana.jpeg');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Housing</span>
-            <h3 class="slide-title">Pradhan Mantri Awas Yojana</h3>
-            <p class="slide-meta">Financial assistance for pucca house construction with basic amenities for rural and urban homeless families.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹54,000 Cr</span>
+          <div class="carousel-overlay">
+            <span class="carousel-badge">Housing</span>
+            <h3 class="carousel-scheme-name">Pradhan Mantri Awas Yojana</h3>
+            <p class="carousel-scheme-desc">Pucca house financial grants with water, sanitation and electricity for poor families.</p>
+            <span class="carousel-budget-badge">💰 Budget: ₹54,000 Cr</span>
           </div>
         </div>
-
-        <!-- Slide 5: Ayushman Bharat -->
+        <!-- 5. Ayushman -->
         <div class="carousel-slide" style="background-image: url('images/schemes/ayushman.webp');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Healthcare</span>
-            <h3 class="slide-title">Ayushman Bharat PM-JAY</h3>
-            <p class="slide-meta">Universal health protection cover of ₹5 Lakh per family per year for secondary and tertiary hospitalization.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹7,500 Cr</span>
-          </div>
-        </div>
-
-        <!-- Slide 6: PMGKAY -->
-        <div class="carousel-slide" style="background-image: url('images/schemes/pmgkay.jpg');">
-          <div class="slide-overlay">
-            <span class="slide-badge">Food Security</span>
-            <h3 class="slide-title">PM Garib Kalyan Anna Yojana</h3>
-            <p class="slide-meta">Free foodgrains (5 kg per person per month) to over 80 Crore Antyodaya and Priority Household beneficiaries.</p>
-            <span class="slide-budget-pill">💰 Budget: ₹2,05,000 Cr</span>
+          <div class="carousel-overlay">
+            <span class="carousel-badge">Health</span>
+            <h3 class="carousel-scheme-name">Ayushman Bharat (PM-JAY)</h3>
+            <p class="carousel-scheme-desc">₹5 Lakh annual secondary & tertiary health cover to 55 Crore vulnerable citizens.</p>
+            <span class="carousel-budget-badge">💰 Budget: ₹7,500 Cr</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 4. Controlled AI Policy Impact Evaluator -->
-    <section class="evaluator-panel" id="evaluatorSection">
-      <div class="section-header" style="margin-top: 0;">
-        <h2 class="section-title">🔬 AI Policy Evaluator</h2>
-        <span style="font-size: 10px; font-weight: 800; color: #10b981; background: rgba(16, 185, 129, 0.12); padding: 2px 7px; border-radius: 4px;">Verified GOI Engine</span>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SECTION 3: AI POLICY SIMULATOR & EVIDENCE PIPELINE
+       ══════════════════════════════════════════════════════════════════════ -->
+  <section id="tabContentSimulator" style="display: none; padding-top: 10px;">
+    <div class="section-wrapper">
+      <div class="section-title-bar">
+        <h2 class="section-title-text">🔬 AI Policy Impact Evaluator</h2>
+        <span style="font-size: 10px; font-weight: 800; color: #10b981;">10,000 Monte Carlo Runs</span>
       </div>
 
-      <!-- Domain Selector Dropdown (14 Domains) -->
-      <div class="domain-select-wrapper">
-        <label class="domain-label" for="mobileDomainSelect">Target Policy Domain</label>
-        <select class="domain-select" id="mobileDomainSelect">
+      <div class="evaluator-box">
+        <!-- 14-Domain Dropdown -->
+        <label style="font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; display: block;">Select Policy Domain</label>
+        <select class="domain-dropdown-bar" id="mobileDomainSelect">
           <option value="education_students">🎓 Student Welfare (Higher Ed)</option>
           <option value="agriculture_farmers">🌾 Farmer & Agricultural Welfare</option>
           <option value="education_teachers">📚 Education System (Teachers & Schools)</option>
@@ -1043,153 +1148,80 @@
           <option value="environment_climate">🌿 Environment & Climate Policy</option>
           <option value="auto">✨ Auto-Detect from Query</option>
         </select>
-      </div>
 
-      <!-- Policy Prompt Input -->
-      <div class="query-input-wrapper">
-        <input type="text" id="policyQueryInput" class="query-input" value="Give 20000 rupees to all undergrad students in universities." placeholder="Type any proposed policy intervention...">
-        <button class="evaluate-btn" id="btnRunEvaluation">
-          <span>🚀</span>
-          <span>Evaluate Policy Impact</span>
+        <!-- Query Input -->
+        <div class="policy-input-row">
+          <input type="text" id="policyQueryInput" class="policy-text-input" value="Give 20000 rupees to all undergrad students in universities." placeholder="Enter policy proposal...">
+          <button class="run-eval-btn" id="btnRunEval">
+            <span>🚀</span>
+            <span>Evaluate Policy Impact</span>
+          </button>
+        </div>
+
+        <!-- 2 Primary Overview Boxes -->
+        <div class="primary-overview-col">
+          <div class="box-benefited">
+            <div class="box-title-bar">🟢 Who is Benefited (Target Cohort)</div>
+            <p class="box-cohort-text" id="benefitedCohort">2.85 Crore Undergraduate Students across 1,113 Universities</p>
+            <div class="box-pill-gain" id="benefitedGain">₹20,000 Direct Annual Benefit via DBT (JAM Trinity)</div>
+            <ul class="box-bullets-list">
+              <li>• Eliminates tuition fee barriers for bottom 60% income quintiles.</li>
+              <li>• Disproportionate retention dividend for female students (+18.2%) and SC/ST cohorts (+22.4%).</li>
+              <li>• Expands digital inclusion via laptops, textbooks, and examination certifications.</li>
+            </ul>
+          </div>
+
+          <div class="box-loss">
+            <div class="box-title-bar">🔴 What is the Loss / Fiscal & Societal Cost</div>
+            <p class="box-cohort-text" id="lossCost">₹57,000 Cr / yr (0.57 Lakh Crore Annual Treasury Commitment)</p>
+            <div class="box-pill-gain" id="lossDeficit">Increases Higher Education Budget by +0.19% GSDP</div>
+            <ul class="box-bullets-list">
+              <li>• Fiscal outlay of ₹57,000 Crore requires 60:40 Center-State co-financing.</li>
+              <li>• Opportunity cost: Diverts funds that could alternatively build 4,500 campus laboratories.</li>
+              <li>• Private fee inflation risk: Unregulated institutes may hike auxiliary examination fees.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 20 Major Quantitative Metrics Grid -->
+        <div class="section-title-bar" style="margin-top: 14px;">
+          <h3 class="section-title-text" style="font-size: 13px;">📊 20 Major Quantitative Metrics</h3>
+          <span style="font-size: 9px; font-weight: 800; color: #7c3aed;">95% Empirical CIs</span>
+        </div>
+        <div class="metrics-2col-grid" id="metricsContainer">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <!-- View Report Button -->
+        <button class="run-eval-btn" style="background: transparent; border: 1.5px solid var(--gov-saffron); color: var(--gov-saffron); margin-top: 14px;" onclick="document.getElementById('reportDrawer').classList.add('active');">
+          <span>📄</span>
+          <span>Generate Official Cabinet Report</span>
         </button>
       </div>
+    </div>
+  </section>
 
-      <!-- Quick Preset Chips -->
-      <div class="preset-chips-scroll">
-        <button class="preset-chip" onclick="setPreset('Give 20000 rupees to all undergrad students in universities.', 'education_students')">🎓 Student Stipend ₹20K</button>
-        <button class="preset-chip" onclick="setPreset('Provide 20 units of water free every day to farmers owning less than 3 acres.', 'water_irrigation')">💧 Free Irrigation Water</button>
-        <button class="preset-chip" onclick="setPreset('Direct cash transfer of ₹10,000 per year to small and marginal farmers.', 'agriculture_farmers')">🌾 Farmer DBT ₹10K</button>
-        <button class="preset-chip" onclick="setPreset('Provide ₹5 Lakh free health cover to all gig and unorganized workers.', 'health_medical')">🏥 Universal Health Cover</button>
-      </div>
-
-      <!-- Pipeline Execution Progress Tracker -->
-      <div class="pipeline-tracker" id="pipelineTracker">
-        <div class="tracker-header">
-          <span class="tracker-title" id="trackerStatusText">🟢 Ready for Simulation</span>
-          <span class="tracker-step-badge" id="trackerStepBadge">Step 8 / 8 Done</span>
-        </div>
-        <div class="tracker-bar-bg">
-          <div class="tracker-bar-fill" id="trackerBar"></div>
-        </div>
-      </div>
-
-      <!-- The Two Broad Primary Metrics -->
-      <div class="overview-grid" id="overviewGrid">
-        <!-- Box 1: Who is Benefited -->
-        <div class="overview-box box-benefited">
-          <div class="overview-box-header">
-            <span>🟢</span>
-            <span class="overview-box-title" id="benefitedTitle">Who is Benefited (Target Cohort)</span>
-          </div>
-          <p class="overview-cohort-highlight" id="benefitedCohort">2.85 Crore Undergraduate Students across 1,113 Universities & 43,796 Colleges</p>
-          <div class="overview-stat-pill" id="benefitedGain">₹20,000 Direct Annual Benefit delivered via DBT (JAM Trinity)</div>
-          <ul class="overview-bullet-list" id="benefitedBullets">
-            <li class="overview-bullet-item"><span>•</span><span>Directly eliminates tuition barriers for bottom 60% income quintiles.</span></li>
-            <li class="overview-bullet-item"><span>•</span><span>Disproportionate retention dividend for female students (+18.2%) and SC/ST cohorts (+22.4%).</span></li>
-            <li class="overview-bullet-item"><span>•</span><span>Expands digital inclusion via laptops, textbooks, and examination certifications.</span></li>
-          </ul>
-        </div>
-
-        <!-- Box 2: What is the Loss / Fiscal Cost -->
-        <div class="overview-box box-loss">
-          <div class="overview-box-header">
-            <span>🔴</span>
-            <span class="overview-box-title" id="lossTitle">What is the Loss / Fiscal & Societal Cost</span>
-          </div>
-          <p class="overview-cohort-highlight" id="lossCost">₹57,000 Cr / yr (0.57 Lakh Crore Annual Treasury Commitment)</p>
-          <div class="overview-stat-pill" id="lossDeficit">Increases Higher Education Budget by +0.19% of GSDP</div>
-          <ul class="overview-bullet-list" id="lossBullets">
-            <li class="overview-bullet-item"><span>•</span><span>Fiscal outlay of ₹57,000 Crore requires 60:40 Center-State co-financing.</span></li>
-            <li class="overview-bullet-item"><span>•</span><span>Opportunity cost: Diverts funds that could alternatively build 4,500 campus laboratories.</span></li>
-            <li class="overview-bullet-item"><span>•</span><span>Private fee inflation risk: Unregulated institutes may hike auxiliary examination fees.</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 20 Major Quantitative Metrics Grid (2-Column Mobile) -->
-      <div class="section-header" id="metricsSection">
-        <h3 class="section-title">📊 20 Major Quantitative Metrics</h3>
-        <span style="font-size: 10px; font-weight: 800; color: #7c3aed;">10,000 Monte Carlo Runs</span>
-      </div>
-
-      <div class="metrics-grid-2col" id="metricsCardsContainer">
-        <!-- Dynamically injected via JavaScript -->
-      </div>
-
-      <!-- 5-Aspect Impact Breakdown -->
-      <div class="section-header">
-        <h3 class="section-title">📑 5-Aspect Socio-Economic Impact</h3>
-      </div>
-
-      <div class="aspects-tabs-scroll" id="aspectsTabsBar">
-        <button class="aspect-tab active" onclick="switchAspect('expenditure')">💰 Expenditure</button>
-        <button class="aspect-tab" onclick="switchAspect('demographics')">👥 Demographics</button>
-        <button class="aspect-tab" onclick="switchAspect('sectoral')">🏭 Sectoral Macro</button>
-        <button class="aspect-tab" onclick="switchAspect('regional')">🗺️ Regional States</button>
-        <button class="aspect-tab" onclick="switchAspect('risks')">⚠️ Risks & Safeties</button>
-      </div>
-
-      <div class="aspect-card-body" id="aspectContentBox">
-        <h4 class="aspect-card-title" id="aspectContentTitle">💰 Government Expenditure & Budget Allocation</h4>
-        <ul class="aspect-insight-list" id="aspectContentList">
-          <li class="aspect-insight-item"><span>•</span><span>Central budgetary commitment: 60% share under Centrally Sponsored Scheme.</span></li>
-          <li class="aspect-insight-item"><span>•</span><span>State matching grant requirement: 40% state co-financing.</span></li>
-          <li class="aspect-insight-item"><span>•</span><span>Quarterly disbursements directly into Aadhaar-seeded accounts via PFMS.</span></li>
-          <li class="aspect-insight-item"><span>•</span><span>Administrative audit overhead capped at 3.5% utilizing DigiLocker APIs.</span></li>
-        </ul>
-      </div>
-
-      <!-- Official Cabinet Printable Report Button -->
-      <button class="print-report-btn" id="btnOpenReportModal">
-        <span>📄</span>
-        <span>View Official Cabinet Report</span>
-      </button>
-
-    </section>
-
-  </main>
-
-  <!-- Sticky Mobile Bottom Navigation Bar -->
-  <nav class="mobile-bottom-nav">
-    <a href="#homeSection" class="nav-item active" id="navHome">
-      <span class="nav-icon">🏠</span>
-      <span>Home</span>
-    </a>
-    <a href="#schemesSection" class="nav-item" id="navSchemes">
-      <span class="nav-icon">⚡</span>
-      <span>Schemes</span>
-    </a>
-    <a href="#evaluatorSection" class="nav-item" id="navEvaluator">
-      <span class="nav-icon">🔬</span>
-      <span>Simulator</span>
-    </a>
-    <a href="#metricsSection" class="nav-item" id="navMetrics">
-      <span class="nav-icon">📊</span>
-      <span>Metrics</span>
-    </a>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       UPSCALE BOTTOM TASK BAR WITH GLOW EFFECT (NO STUPID ICONS)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <nav class="upscale-bottom-nav">
+    <button class="task-tab-btn active" id="tabBtnHome" onclick="switchMode('home')">HOME</button>
+    <button class="task-tab-btn" id="tabBtnSchemes" onclick="switchMode('schemes')">SCHEMES</button>
+    <button class="task-tab-btn" id="tabBtnSimulator" onclick="switchMode('simulator')">SIMULATOR</button>
   </nav>
 
-  <!-- Cabinet Report Fullscreen Mobile Modal -->
-  <div class="report-modal" id="reportModal">
-    <button class="modal-close-btn" id="btnCloseReportModal">✕</button>
-    <div style="text-align: center; margin-bottom: 16px; border-bottom: 2px solid var(--border-subtle); padding-bottom: 12px;">
+  <!-- Cabinet Report Drawer Modal -->
+  <div class="report-drawer" id="reportDrawer">
+    <button class="control-btn" style="position: absolute; top: calc(var(--safe-top) + 12px); right: 14px;" onclick="document.getElementById('reportDrawer').classList.remove('active');">✕</button>
+    <div style="text-align: center; margin-bottom: 16px; border-bottom: 1.5px solid var(--border-card); padding-bottom: 12px;">
       <img src="images/emblem.png" alt="Emblem" style="height: 48px; margin-bottom: 6px;">
-      <h3 style="font-size: 15px; font-weight: 900; color: var(--text-primary);">NITI AAYOG • POLICY ADVISORY REPORT</h3>
-      <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Cabinet Committee on Economic Affairs (CCEA) Working Paper</p>
+      <h3 style="font-size: 15px; font-weight: 900; color: var(--text-main);">NITI AAYOG • POLICY ADVISORY REPORT</h3>
+      <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Cabinet Committee on Economic Affairs (CCEA)</p>
     </div>
-
-    <div style="background: var(--bg-surface-elevated); padding: 12px; border-radius: 8px; margin-bottom: 14px; font-size: 11.5px; line-height: 1.5; color: var(--text-secondary);">
-      <p><strong>Executive Verdict:</strong> The proposed policy intervention demonstrates high positive welfare equity (+74/100) with proven demographic dividends for bottom income quintiles. However, fiscal sustainability mandates phased center-state co-financing.</p>
+    <div style="background: var(--bg-card-subtle); padding: 12px; border-radius: 8px; font-size: 11.5px; line-height: 1.5; color: var(--text-muted); margin-bottom: 14px;">
+      <strong>Executive Verdict:</strong> The proposed policy delivers high progressive equity for bottom income quintiles. Requires phased co-financing to maintain fiscal deficit targets.
     </div>
-
-    <div style="margin-bottom: 16px;">
-      <h4 style="font-size: 12px; font-weight: 800; margin-bottom: 8px; color: var(--gov-saffron);">Simulated Key Metrics Ledger (95% CI)</h4>
-      <div id="modalMetricsTable" style="display: flex; flex-direction: column; gap: 6px; font-size: 11px;">
-        <!-- Injected via JS -->
-      </div>
-    </div>
-
-    <button class="evaluate-btn" onclick="window.print()" style="margin-top: 10px;">
+    <button class="run-eval-btn" onclick="window.print()">
       <span>🖨️</span>
       <span>Print / Export PDF</span>
     </button>
@@ -1197,304 +1229,159 @@
 
   <script>
     /* =====================================================================
-       MOBILE CLIENT LOGIC - CAROUSEL, SIMULATOR, THEME & TRANSLATION
+       CLIENT SCRIPT: THEMES, MODES, GLOW TABS & SIMULATION
        ===================================================================== */
 
-    // ── 1. Carousel Auto-Sliding (5 seconds) ──
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.carousel-dots .dot');
-    let carouselTimer = null;
+    // ── 1. Bottom Task Bar Mode Switching (With Upscale Glow) ──
+    function switchMode(modeKey) {
+      document.getElementById('tabContentHome').style.display = modeKey === 'home' ? 'block' : 'none';
+      document.getElementById('tabContentSchemes').style.display = modeKey === 'schemes' ? 'block' : 'none';
+      document.getElementById('tabContentSimulator').style.display = modeKey === 'simulator' ? 'block' : 'none';
 
-    function showSlide(index) {
-      slides.forEach((s, i) => {
-        s.classList.toggle('active', i === index);
-        dots[i].classList.toggle('active', i === index);
-      });
-      currentSlide = index;
+      document.querySelectorAll('.task-tab-btn').forEach(b => b.classList.remove('active'));
+      if (modeKey === 'home') document.getElementById('tabBtnHome').classList.add('active');
+      if (modeKey === 'schemes') document.getElementById('tabBtnSchemes').classList.add('active');
+      if (modeKey === 'simulator') document.getElementById('tabBtnSimulator').classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function nextSlide() {
-      showSlide((currentSlide + 1) % slides.length);
-    }
-
-    function prevSlide() {
-      showSlide((currentSlide - 1 + slides.length) % slides.length);
-    }
-
-    function startCarousel() {
-      if (carouselTimer) clearInterval(carouselTimer);
-      carouselTimer = setInterval(nextSlide, 5000);
-    }
-
-    document.getElementById('btnNextScheme').addEventListener('click', () => { nextSlide(); startCarousel(); });
-    document.getElementById('btnPrevScheme').addEventListener('click', () => { prevSlide(); startCarousel(); });
-    startCarousel();
-
-    // Touch Swipe Support for Mobile Carousel
-    let touchStartX = 0;
-    const carouselWrapper = document.getElementById('carouselWrapper');
-    carouselWrapper.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    carouselWrapper.addEventListener('touchend', e => {
-      const touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 45) { nextSlide(); startCarousel(); }
-      else if (touchEndX - touchStartX > 45) { prevSlide(); startCarousel(); }
-    }, { passive: true });
-
-    // ── 2. Theme Engine (Dark / Light) ──
-    const themeBtn = document.getElementById('themeToggleBtn');
+    // ── 2. Theme Toggle (Exact Mirror of Desktop) ──
+    const themeBtn = document.getElementById('btnThemeToggle');
     themeBtn.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
       const target = current === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', target);
-      themeBtn.textContent = target === 'dark' ? '🌙' : '☀️';
+      
+      const svg = document.getElementById('themeIconSvg');
+      if (target === 'dark') {
+        svg.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      } else {
+        svg.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      }
     });
 
-    // ── 3. Preset Quick Chips ──
-    function setPreset(queryText, domainVal) {
-      document.getElementById('policyQueryInput').value = queryText;
-      document.getElementById('mobileDomainSelect').value = domainVal;
-      runMobileSimulation();
-    }
+    // ── 3. Language Toggle ──
+    const langBtn = document.getElementById('btnLanguage');
+    const langLbl = document.getElementById('langLabel');
+    const languages = ['en', 'hi', 'ta'];
+    let langIndex = 0;
+    langBtn.addEventListener('click', () => {
+      langIndex = (langIndex + 1) % languages.length;
+      const code = languages[langIndex];
+      langLbl.textContent = code === 'en' ? 'English' : (code === 'hi' ? 'हिन्दी' : 'தமிழ்');
+    });
 
-    // ── 4. 20 Quantitative Metrics Mock Database by Domain ──
-    const DOMAIN_METRICS = {
+    // ── 4. 5-Second Sliding Schemes Carousel ──
+    let curSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    function showSlide(idx) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+      curSlide = idx;
+    }
+    function nextSlide() { showSlide((curSlide + 1) % slides.length); }
+    function prevSlide() { showSlide((curSlide - 1 + slides.length) % slides.length); }
+    let carTimer = setInterval(nextSlide, 5000);
+
+    document.getElementById('btnCarNext').addEventListener('click', () => { nextSlide(); clearInterval(carTimer); carTimer = setInterval(nextSlide, 5000); });
+    document.getElementById('btnCarPrev').addEventListener('click', () => { prevSlide(); clearInterval(carTimer); carTimer = setInterval(nextSlide, 5000); });
+
+    // ── 5. 20 Quantitative Metrics Database ──
+    const METRICS_DATA = {
       education_students: [
-        { label: "Tuition Relief", val: "+38.5%", ci: "[32.1%, 44.8%]", type: "PROJECTED", desc: "Alleviates fee burden for families < ₹3 LPA." },
-        { label: "Dropout Decline", val: "-24.6%", ci: "[-30.1%, -19.1%]", type: "PROJECTED", isNeg: true, desc: "Decline in financial distress dropouts." },
-        { label: "Higher Ed GER", val: "+4.8%", ci: "[3.7%, 6.0%]", type: "PROJECTED", desc: "Expansion towards NEP 2020 target." },
-        { label: "Female Enrolment", val: "+18.2%", ci: "[14.6%, 21.9%]", type: "PROJECTED", desc: "Retention gain among rural female students." },
-        { label: "SC/ST Retention", val: "+22.4%", ci: "[18.1%, 26.5%]", type: "PROJECTED", desc: "Higher graduation in public state colleges." },
-        { label: "STEM Completion", val: "+12.8%", ci: "[10.2%, 15.6%]", type: "PROJECTED", desc: "Persistence in professional degree programs." },
-        { label: "1st-Gen Graduates", val: "+19.5%", ci: "[15.9%, 23.1%]", type: "PROJECTED", desc: "First degree holders in family." },
-        { label: "Distress Labor", val: "-32.0%", ci: "[-38.5%, -25.2%]", type: "PROJECTED", isNeg: true, desc: "Drop in night-shift distress jobs." },
-        { label: "Laptop Access", val: "+28.6%", ci: "[23.4%, 33.8%]", type: "PROJECTED", desc: "Digital hardware device ownership." },
-        { label: "Internships", val: "+16.4%", ci: "[13.2%, 19.4%]", type: "PROJECTED", desc: "Participation in career skill training." },
-        { label: "Employability", val: "+11.2%", ci: "[9.1%, 13.4%]", type: "PROJECTED", desc: "Certification pass rates." },
-        { label: "Education Debt", val: "-28.2%", ci: "[-33.7%, -22.5%]", type: "PROJECTED", isNeg: true, desc: "Reduction in NBFC high-interest debt." },
-        { label: "Financial Anxiety", val: "-42.0%", ci: "[-49.8%, -34.1%]", type: "PROJECTED", isNeg: true, desc: "Mental health academic relief." },
-        { label: "Tier 2/3 Colleges", val: "+21.0%", ci: "[17.1%, 24.8%]", type: "PROJECTED", desc: "Physical attendance in rural colleges." },
-        { label: "Hostel Subsidy", val: "+34.2%", ci: "[28.2%, 40.3%]", type: "PROJECTED", desc: "Room rent & mess allowance relief." },
-        { label: "Textbook Access", val: "+45.0%", ci: "[37.5%, 52.4%]", type: "PROJECTED", desc: "Purchase of syllabus curriculum books." },
-        { label: "Brain Drain Delta", val: "-8.5%", ci: "[-10.8%, -6.1%]", type: "PROJECTED", isNeg: true, desc: "Retention of regional talent." },
-        { label: "Fiscal Multiplier", val: "1.48x", ci: "[1.32, 1.64]", type: "MODELLED", desc: "Economic output per rupee invested." },
-        { label: "Fee Inflation Risk", val: "+6.2%", ci: "[4.4%, 8.0%]", type: "PROJECTED", isNeg: true, desc: "Private institute fee capture risk." },
-        { label: "National Convocations", val: "+8.4%", ci: "[6.8%, 10.0%]", type: "PROJECTED", desc: "On-time university graduations." }
+        { label: "Tuition Relief", val: "+38.5%", ci: "[32.1%, 44.8%]", type: "PROJ" },
+        { label: "Dropout Decline", val: "-24.6%", ci: "[-30.1%, -19.1%]", type: "PROJ", neg: true },
+        { label: "Higher Ed GER", val: "+4.8%", ci: "[3.7%, 6.0%]", type: "PROJ" },
+        { label: "Female Enrolment", val: "+18.2%", ci: "[14.6%, 21.9%]", type: "PROJ" },
+        { label: "SC/ST Retention", val: "+22.4%", ci: "[18.1%, 26.5%]", type: "PROJ" },
+        { label: "STEM Completion", val: "+12.8%", ci: "[10.2%, 15.6%]", type: "PROJ" },
+        { label: "1st-Gen Graduates", val: "+19.5%", ci: "[15.9%, 23.1%]", type: "PROJ" },
+        { label: "Distress Labor", val: "-32.0%", ci: "[-38.5%, -25.2%]", type: "PROJ", neg: true },
+        { label: "Laptop Access", val: "+28.6%", ci: "[23.4%, 33.8%]", type: "PROJ" },
+        { label: "Internships", val: "+16.4%", ci: "[13.2%, 19.4%]", type: "PROJ" },
+        { label: "Employability", val: "+11.2%", ci: "[9.1%, 13.4%]", type: "PROJ" },
+        { label: "Education Debt", val: "-28.2%", ci: "[-33.7%, -22.5%]", type: "PROJ", neg: true },
+        { label: "Anxiety Decline", val: "-42.0%", ci: "[-49.8%, -34.1%]", type: "PROJ", neg: true },
+        { label: "Rural College Gain", val: "+21.0%", ci: "[17.1%, 24.8%]", type: "PROJ" },
+        { label: "Hostel Subsidy", val: "+34.2%", ci: "[28.2%, 40.3%]", type: "PROJ" },
+        { label: "Textbook Access", val: "+45.0%", ci: "[37.5%, 52.4%]", type: "PROJ" },
+        { label: "Brain Drain Delta", val: "-8.5%", ci: "[-10.8%, -6.1%]", type: "PROJ", neg: true },
+        { label: "Fiscal Multiplier", val: "1.48x", ci: "[1.32, 1.64]", type: "MOD" },
+        { label: "Private Fee Hike", val: "+6.2%", ci: "[4.4%, 8.0%]", type: "PROJ", neg: true },
+        { label: "National Convocations", val: "+8.4%", ci: "[6.8%, 10.0%]", type: "PROJ" }
       ],
       water_irrigation: [
-        { label: "Smallholder Income", val: "+7.2%", ci: "[5.8%, 8.6%]", type: "PROJECTED", desc: "Net gain from eliminated diesel pumping." },
-        { label: "Crop Productivity", val: "+5.4%", ci: "[4.2%, 6.6%]", type: "PROJECTED", desc: "Observed yield increase per acre." },
-        { label: "Water Extraction", val: "+12.8%", ci: "[10.1%, 15.5%]", type: "PROJECTED", isNeg: true, desc: "Increased draw under zero-tariff supply." },
-        { label: "Aquifer Depletion", val: "0.45m/yr", ci: "[0.35, 0.55]", type: "OBSERVED", isNeg: true, desc: "Decline in water table in alluvial blocks." },
-        { label: "Diesel Pump Savings", val: "-74.0%", ci: "[-81%, -67%]", type: "OBSERVED", desc: "Direct savings in fuel expenses." },
-        { label: "Cropping Intensity", val: "+14.5%", ci: "[11.5%, 17.5%]", type: "PROJECTED", desc: "Second crop cultivated in dry season." },
-        { label: "Moneylender Debt", val: "-22.5%", ci: "[-27%, -18%]", type: "PROJECTED", desc: "Reduction in informal seasonal loans." },
-        { label: "Agricultural Wages", val: "+4.2%", ci: "[3.2%, 5.2%]", type: "PROJECTED", desc: "Higher farm labor demand." },
-        { label: "Buffer Stock", val: "+3.1%", ci: "[2.3%, 3.9%]", type: "PROJECTED", desc: "Procurement share to central pool." },
-        { label: "DISCOM Burden", val: "+16.8%", ci: "[13.2%, 20.4%]", type: "MODELLED", isNeg: true, desc: "Power subsidy deficit strain." },
-        { label: "Women Drudgery", val: "-1.8 hrs", ci: "[-2.2, -1.4]", type: "OBSERVED", desc: "Daily hours saved fetching water." },
-        { label: "Tenant Benefit", val: "+4.8%", ci: "[3.6%, 6.0%]", type: "PROJECTED", desc: "Share of unformalized sharecroppers." },
-        { label: "Drought Resilience", val: "+19.4%", ci: "[15.2%, 23.6%]", type: "PROJECTED", desc: "Buffer against delayed southwest monsoon." },
-        { label: "Drip Displacement", val: "-12.4%", ci: "[-15%, -9%]", type: "PROJECTED", isNeg: true, desc: "Farmers abandoning micro-irrigation." },
-        { label: "Soil Salinization", val: "+9.2%", ci: "[7.0%, 11.4%]", type: "PROJECTED", isNeg: true, desc: "Mineral build-up from flood watering." },
-        { label: "FPO Realization", val: "+6.8%", ci: "[5.4%, 8.2%]", type: "PROJECTED", desc: "Bargaining power for irrigated crops." },
-        { label: "Procurement Cost", val: "+5.6%", ci: "[4.4%, 6.8%]", type: "MODELLED", isNeg: true, desc: "State grain handling logistics cost." },
-        { label: "Riparian Conflict", val: "+11.0%", ci: "[8.6%, 13.4%]", type: "PROJECTED", isNeg: true, desc: "Inter-state river basin stress." },
-        { label: "State Fiscal Deficit", val: "+0.08%", ci: "[0.06%, 0.10%]", type: "MODELLED", isNeg: true, desc: "Net debt delta from water subsidies." },
-        { label: "Food Security Score", val: "+8.5%", ci: "[6.8%, 10.2%]", type: "PROJECTED", desc: "Caloric availability stability index." }
+        { label: "Smallholder Income", val: "+7.2%", ci: "[5.8%, 8.6%]", type: "PROJ" },
+        { label: "Crop Productivity", val: "+5.4%", ci: "[4.2%, 6.6%]", type: "PROJ" },
+        { label: "Water Extraction", val: "+12.8%", ci: "[10.1%, 15.5%]", type: "PROJ", neg: true },
+        { label: "Aquifer Depletion", val: "0.45m/yr", ci: "[0.35, 0.55]", type: "OBS", neg: true },
+        { label: "Diesel Savings", val: "-74.0%", ci: "[-81%, -67%]", type: "OBS" },
+        { label: "Double Cropping", val: "+14.5%", ci: "[11.5%, 17.5%]", type: "PROJ" },
+        { label: "Moneylender Debt", val: "-22.5%", ci: "[-27%, -18%]", type: "PROJ" },
+        { label: "Farm Wages", val: "+4.2%", ci: "[3.2%, 5.2%]", type: "PROJ" },
+        { label: "Buffer Stock", val: "+3.1%", ci: "[2.3%, 3.9%]", type: "PROJ" },
+        { label: "DISCOM Burden", val: "+16.8%", ci: "[13.2%, 20.4%]", type: "MOD", neg: true },
+        { label: "Women Drudgery", val: "-1.8 hrs", ci: "[-2.2, -1.4]", type: "OBS" },
+        { label: "Tenant Benefit", val: "+4.8%", ci: "[3.6%, 6.0%]", type: "PROJ" },
+        { label: "Drought Shield", val: "+19.4%", ci: "[15.2%, 23.6%]", type: "PROJ" },
+        { label: "Drip Displacement", val: "-12.4%", ci: "[-15%, -9%]", type: "PROJ", neg: true },
+        { label: "Soil Salinization", val: "+9.2%", ci: "[7.0%, 11.4%]", type: "PROJ", neg: true },
+        { label: "FPO Realization", val: "+6.8%", ci: "[5.4%, 8.2%]", type: "PROJ" },
+        { label: "Logistics Outlay", val: "+5.6%", ci: "[4.4%, 6.8%]", type: "MOD", neg: true },
+        { label: "River Basin Stress", val: "+11.0%", ci: "[8.6%, 13.4%]", type: "PROJ", neg: true },
+        { label: "Deficit Multiplier", val: "+0.08%", ci: "[0.06%, 0.10%]", type: "MOD", neg: true },
+        { label: "Food Security", val: "+8.5%", ci: "[6.8%, 10.2%]", type: "PROJ" }
       ]
     };
 
-    function renderMetrics(domainKey) {
-      const container = document.getElementById('metricsCardsContainer');
-      const modalTable = document.getElementById('modalMetricsTable');
+    function render20Metrics(domKey) {
+      const container = document.getElementById('metricsContainer');
       container.innerHTML = '';
-      modalTable.innerHTML = '';
-
-      const list = DOMAIN_METRICS[domainKey] || DOMAIN_METRICS.education_students;
+      const list = METRICS_DATA[domKey] || METRICS_DATA.education_students;
 
       list.forEach((m, idx) => {
-        const badgeClass = m.type === 'OBSERVED' ? 'badge-observed' : (m.type === 'MODELLED' ? 'badge-modelled' : 'badge-projected');
-        const isNegColor = m.isNeg ? 'negative' : '';
-
-        // Card HTML
-        const card = document.createElement('div');
-        card.className = 'metric-card';
-        card.innerHTML = `
+        const badgeClass = m.type === 'OBS' ? 'badge-obs' : (m.type === 'MOD' ? 'badge-mod' : 'badge-proj');
+        const tile = document.createElement('div');
+        tile.className = 'metric-card-tile';
+        tile.innerHTML = `
           <div>
-            <div class="metric-card-top">
-              <span class="metric-badge ${badgeClass}">${m.type}</span>
-              <span style="font-size: 10px; color: var(--text-muted);">#${idx + 1}</span>
+            <div class="metric-top-row">
+              <span class="badge-pill ${badgeClass}">${m.type}</span>
+              <span style="font-size: 8.5px; color: var(--text-dim);">#${idx + 1}</span>
             </div>
-            <div class="metric-card-label">${m.label}</div>
+            <div class="metric-card-lbl">${m.label}</div>
           </div>
           <div>
-            <div class="metric-card-value ${isNegColor}">${m.val}</div>
-            <div class="metric-card-ci">95% CI: ${m.ci}</div>
+            <div class="metric-card-val ${m.neg ? 'neg' : ''}">${m.val}</div>
+            <div class="metric-card-ci-val">95% CI: ${m.ci}</div>
           </div>
         `;
-        container.appendChild(card);
-
-        // Modal Table Row
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.padding = '4px 0';
-        row.style.borderBottom = '1px solid var(--border-subtle)';
-        row.innerHTML = `
-          <span style="color: var(--text-primary); font-weight: 700;">${m.label}</span>
-          <span style="color: ${m.isNeg ? '#ef4444' : '#10b981'}; font-weight: 800;">${m.val} <small style="color: var(--text-muted);">${m.ci}</small></span>
-        `;
-        modalTable.appendChild(row);
+        container.appendChild(tile);
       });
     }
 
-    // ── 5. Run Mobile Simulation Handler ──
-    async function runMobileSimulation() {
-      const domain = document.getElementById('mobileDomainSelect').value;
-      const query = document.getElementById('policyQueryInput').value.trim();
-      const trackerStatus = document.getElementById('trackerStatusText');
-      const trackerBadge = document.getElementById('trackerStepBadge');
-      const trackerBar = document.getElementById('trackerBar');
+    render20Metrics('education_students');
 
-      trackerStatus.textContent = '⏳ Executing 9-Stage Sovereign Retrieval & 10,000 Monte Carlo Runs...';
-      trackerBadge.textContent = 'Running...';
-      trackerBar.style.width = '40%';
-
-      // Try live API if server is up, else update instantly
-      try {
-        const res = await fetch('/api/pipeline/research', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, domain })
-        });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            applyData(json.data.simulation_results);
-          }
-        }
-      } catch (_) {
-        // Dynamic client-side update
+    // ── 6. Simulator Execution Handler ──
+    document.getElementById('btnRunEval').addEventListener('click', () => {
+      const dom = document.getElementById('mobileDomainSelect').value;
+      if (dom === 'water_irrigation' || dom === 'agriculture_farmers') {
+        document.getElementById('benefitedCohort').textContent = '7.2 Crore Small and Marginal Farmers (< 3 acres)';
+        document.getElementById('benefitedGain').textContent = '20 units/day water saving ₹8,500/yr diesel cost';
+        document.getElementById('lossCost').textContent = '₹24,800 Cr / yr (Annual State Treasury Outlay)';
+        document.getElementById('lossDeficit').textContent = 'Increases State DISCOM Power Deficit by +0.08% GSDP';
+        render20Metrics('water_irrigation');
+      } else {
+        document.getElementById('benefitedCohort').textContent = '2.85 Crore Undergraduate Students across 1,113 Universities';
+        document.getElementById('benefitedGain').textContent = '₹20,000 Direct Annual Benefit via DBT (JAM Trinity)';
+        document.getElementById('lossCost').textContent = '₹57,000 Cr / yr (0.57 Lakh Crore Annual Treasury Commitment)';
+        document.getElementById('lossDeficit').textContent = 'Increases Higher Education Budget by +0.19% GSDP';
+        render20Metrics('education_students');
       }
+    });
 
-      setTimeout(() => {
-        trackerStatus.textContent = '🟢 Grounded in 57 GOI Domains (0 Hallucinations)';
-        trackerBadge.textContent = 'Step 8 / 8 Done';
-        trackerBar.style.width = '100%';
-
-        if (domain === 'water_irrigation' || domain === 'agriculture_farmers') {
-          document.getElementById('benefitedCohort').textContent = '7.2 Crore Small and Marginal Farmers (< 3 acres / 1.2 hectares)';
-          document.getElementById('benefitedGain').textContent = 'Assured 20 units/day water allocation saving ₹8,500/yr in diesel pumping';
-          document.getElementById('lossCost').textContent = '₹24,800 Cr / yr (Annual State Treasury Outlay)';
-          document.getElementById('lossDeficit').textContent = 'Increases State DISCOM Power Deficit by +0.08% GSDP';
-          renderMetrics('water_irrigation');
-        } else {
-          document.getElementById('benefitedCohort').textContent = '2.85 Crore Undergraduate Students across 1,113 Universities';
-          document.getElementById('benefitedGain').textContent = '₹20,000 Direct Annual Benefit delivered via DBT (JAM Trinity)';
-          document.getElementById('lossCost').textContent = '₹57,000 Cr / yr (0.57 Lakh Crore Annual Outlay)';
-          document.getElementById('lossDeficit').textContent = 'Increases Higher Education Budget by +0.19% GSDP';
-          renderMetrics('education_students');
-        }
-      }, 600);
-    }
-
-    document.getElementById('btnRunEvaluation').addEventListener('click', runMobileSimulation);
-    document.getElementById('mobileDomainSelect').addEventListener('change', runMobileSimulation);
-
-    // Initial render
-    renderMetrics('education_students');
-
-    // ── 6. 5 Aspects Tab Switching ──
-    const ASPECT_DATA = {
-      expenditure: {
-        title: "💰 Government Expenditure & Budget Allocation",
-        items: [
-          "Central budgetary commitment: 60% share under Centrally Sponsored Scheme.",
-          "State matching grant requirement: 40% state co-financing.",
-          "Quarterly disbursements directly into Aadhaar-seeded accounts via PFMS.",
-          "Administrative audit overhead capped at 3.5% utilizing DigiLocker APIs."
-        ]
-      },
-      demographics: {
-        title: "👥 Demographic, Gender & Equity Impact",
-        items: [
-          "Disproportionate gain for bottom 2 income quintiles (80% flow).",
-          "Female retention expands by +18.2%, bridging gender gaps.",
-          "Substantial representation of SC (21.4%) and ST (16.8%) student cohorts."
-        ]
-      },
-      sectoral: {
-        title: "🏭 Sectoral & Macroeconomic Spillover",
-        items: [
-          "Stimulates retail spending on textbooks, digital laptops, and transit.",
-          "Long-term tax buoyancy: Higher graduate incomes expand future tax base.",
-          "Mitigates intergenerational poverty transmission in rural districts."
-        ]
-      },
-      regional: {
-        title: "🗺️ Regional & State-Level Disparities",
-        items: [
-          "High-capacity states (TN, MH) achieve >92% on-time disbursement.",
-          "Aspirational districts in UP & Bihar require dedicated helpdesks.",
-          "Rural colleges experience the highest proportional drop in attrition."
-        ]
-      },
-      risks: {
-        title: "⚠️ Risks, Unintended Consequences & Mitigations",
-        items: [
-          "Private fee inflation: Institute state fee regulatory caps.",
-          "Ghost beneficiaries: Mandate biometric Aadhaar authentication.",
-          "Attendance criteria: Link successive disbursements to 75% attendance."
-        ]
-      }
-    };
-
-    function switchAspect(key) {
-      document.querySelectorAll('#aspectsTabsBar .aspect-tab').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      const data = ASPECT_DATA[key];
-      document.getElementById('aspectContentTitle').textContent = data.title;
-      const list = document.getElementById('aspectContentList');
-      list.innerHTML = '';
-      data.items.forEach(it => {
-        const li = document.createElement('li');
-        li.className = 'aspect-insight-item';
-        li.innerHTML = `<span>•</span><span>${it}</span>`;
-        list.appendChild(li);
-      });
-    }
-
-    // ── 7. Report Modal Controls ──
-    const modal = document.getElementById('reportModal');
-    document.getElementById('btnOpenReportModal').addEventListener('click', () => modal.classList.add('open'));
-    document.getElementById('btnCloseReportModal').addEventListener('click', () => modal.classList.remove('open'));
-
-    // ── 8. Trilingual Localization Engine ──
-    const I18N = {
-      en: {
-        heroTitle: "AI Public Policy Impact Simulator",
-        heroDesc: "Empirical policy intelligence powered by Llama 3.1 8B, verified Government of India archives (data.gov.in, rbi.org.in), and 10,000 Monte Carlo stochastic iterations.",
-        pmQuote: '"When technology combines with national aspiration, policymaking becomes transparent, accountable, and impactful for the poorest citizen."'
-      },
-      hi: {
-        heroTitle: "एआई लोक नीति प्रभाव सिमुलेटर",
-        heroDesc: "लामा 3.1 8B, प्रमाणित भारत सरकार अभिलेखागार (data.gov.in, rbi.org.in), एवं 10,000 मोंटे कार्लो पुनरावृत्तियों द्वारा संचालित नीतिगत बुद्धिमत्ता।",
-        pmQuote: '"जब प्रौद्योगिकी राष्ट्रीय आकांक्षा के साथ मिलती है, तो नीतियां पारदर्शी, जवाबदेह और अंतिम नागरिक तक प्रभावी बनती हैं।"'
-      },
-      ta: {
-        heroTitle: "செயற்கை நுண்ணறிவு பொதுக் கொள்கை தாக்க மாதிரி",
-        heroDesc: "லாமா 3.1 8B, சரிபார்க்கப்பட்ட இந்திய அரசு தரவுகள் (data.gov.in) மற்றும் 10,000 மான்டே கார்லோ சுழற்சிகளால் இயங்கும் கொள்கை பகுப்பாய்வு தளம்.",
-        pmQuote: '"தொழில்நுட்பம் தேசிய நோக்கத்துடன் இணையும் போது, கொள்கை உருவாக்கம் வெளிப்படையானதாகவும் ஏழை எளியோரை சென்றடைவதாகவும் மாறுகிறது."'
-      }
-    };
-
-    document.getElementById('langSelect').addEventListener('change', e => {
-      const lang = e.target.value;
-      const t = I18N[lang] || I18N.en;
-      document.getElementById('txtHeroTitle').textContent = t.heroTitle;
-      document.getElementById('txtHeroDesc').textContent = t.heroDesc;
-      document.getElementById('txtPmQuote').textContent = t.pmQuote;
+    document.getElementById('mobileDomainSelect').addEventListener('change', () => {
+      document.getElementById('btnRunEval').click();
     });
   </script>
 </body>
