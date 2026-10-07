@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite --port 3000",
-    "build": "vite build",
+    "build": "vite build && node -e \"const fs = require('fs'); try { fs.cpSync('dist', '../server/public', { recursive: true }); } catch (e) {}\"",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/mobile", "destination": "/mobile.html" },
+    { "source": "/mobile.html", "destination": "/mobile.html" },
+    { "source": "/((?!api|mobile|images|assets|.*\\..*).*)", "destination": "/index.html" }
+  ]
+}
