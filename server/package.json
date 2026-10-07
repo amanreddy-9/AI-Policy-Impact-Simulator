@@ -1,0 +1,14 @@
+{
+  "name": "policysim-ai-india-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "cors": "^2.8.5",
+    "http-proxy-middleware": "^3.0.3"
+  }
+}

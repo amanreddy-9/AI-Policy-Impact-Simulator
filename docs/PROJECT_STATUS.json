@@ -1,0 +1,14 @@
+{
+  "architecture": [
+    "frontend",
+    "fastapi",
+    "knowledge_graph",
+    "causal_inference",
+    "monte_carlo_simulation",
+    "ppo_rl",
+    "evaluation"
+  ],
+  "data_mode": "synthetic_demo",
+  "policy_domain": "PM-KISAN",
+  "warning": "Demo coefficients are illustrative; replace with validated Indian estimates."
+}

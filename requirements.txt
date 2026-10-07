@@ -1,0 +1,12 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pandas>=2.2
+numpy>=2.0
+scikit-learn>=1.5
+statsmodels>=0.14
+gymnasium>=1.0
+stable-baselines3>=2.3
+dowhy>=0.12
+econml>=0.16
+neo4j>=5.0
+python-dotenv>=1.0
