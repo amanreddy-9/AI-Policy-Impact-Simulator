@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "name": "ai-policy-impact-simulator",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/mobile", "destination": "/mobile.html" },
+    { "source": "/images/(.*)", "destination": "/images/$1" }
+  ]
+}
