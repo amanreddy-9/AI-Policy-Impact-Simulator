@@ -1,5 +1,8 @@
+const { POLICY_CATEGORIES } = require('./policyCategories');
+const BudgetEngine = require('./budgetEngine');
+
 let cachedModel = process.env.OLLAMA_MODEL || null;
-const OLLAMA_BASE_URL = 'http://localhost:11434';
+const OLLAMA_BASE_URL = process.env.OLLAMA_HOST || 'http://127.0.0.1:11434';
 
 async function getModelName() {
   if (cachedModel) return cachedModel;
@@ -120,10 +123,20 @@ async function evaluatePolicy({ mode, policyName, description, categories, lever
   
   const leverSummary = Object.entries(levers || {}).map(([k, v]) => `  - ${k}: ${v}`).join('\n');
   
+  const sectoralBudgetsContext = (categories || []).map(catId => {
+    const found = POLICY_CATEGORIES.find(c => c.id === catId);
+    if (found && found.budget) {
+      return `  - ${found.name}: ${found.budget} (${found.ministry})`;
+    }
+    return `  - ${catId}`;
+  }).join('\n');
+
   const prompt = `You are a senior policy analyst at NITI Aayog (National Institution for Transforming India) with 20+ years of experience analyzing Indian welfare policies. You have deep expertise in India's socioeconomic landscape:
 - India has 1.44 billion people, ~65% rural population
 - 22% below poverty line (~270 million people)
 - Annual Union Budget ~₹45 Lakh Crore
+- Official Sectoral Baseline Allocations (Union Budget):
+${sectoralBudgetsContext || '  - Standard sectoral baseline applies'}
 - Key challenges: income inequality, caste disparities (SC 16.6%, ST 8.6%, OBC 41%), gender gap, child malnutrition (35.5% stunting), farmer distress
 
 TASK: Analyze the following policy configuration and provide a comprehensive impact assessment.
@@ -137,7 +150,7 @@ Language preference: ${language}
 Policy Lever Settings:
 ${leverSummary}
 
-Based on these lever values, analyze the real-world impact considering India's administrative capacity, fiscal space, state-level variations, and implementation challenges.
+Based on these lever values, analyze the real-world impact considering India's administrative capacity, fiscal space, sectoral budgets, state-level variations, and implementation challenges.
 
 Return ONLY a valid JSON object (no explanation, no markdown) with this EXACT structure:
 {
@@ -196,6 +209,8 @@ Return ONLY a valid JSON object (no explanation, no markdown) with this EXACT st
   if (typeof rawSust === 'string') rawSust = parseFloat(rawSust.replace(/[^0-9.]/g, '')) || 70;
   rawSust = Math.min(100, Math.max(0, Number(Number(rawSust).toFixed(1))));
 
+  const budgetCalc = BudgetEngine.calculate(levers || {}, categories || []);
+
   return {
     simulation: {
       effectiveness_score: rawEff,
@@ -208,6 +223,8 @@ Return ONLY a valid JSON object (no explanation, no markdown) with this EXACT st
         children_family: { child_malnutrition_reduction_pct: 10, school_retention_increase_pct: 7, family_welfare_index: 70 }
       }
     },
+    budget_calculation: budgetCalc,
+    report: parsed.report ?? null,
     ai_guidance: parsed.ai_guidance ?? {
       executive_verdict: 'Policy evaluation completed. The configured levers show notable potential for welfare improvement.',
       fiscal_and_regional_risks: 'Standard fiscal sustainability considerations apply. Continuous monitoring recommended.',

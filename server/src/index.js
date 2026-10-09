@@ -6,6 +6,7 @@ const { checkOllamaStatus, generateSliders, evaluatePolicy, optimizeLevers } = r
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const FASTAPI_URL = process.env.FASTAPI_TARGET || 'http://127.0.0.1:8000';
 
 app.use(cors());
 app.use(express.json());
@@ -25,7 +26,7 @@ app.get('/api/status', async (req, res) => {
   }
 });
 
-// 2. GET /api/categories - Return all 35 policy categories (with their lever templates)
+// 2. GET /api/categories - Return all policy categories (with sectoral budget & ministry data)
 app.get('/api/categories', (req, res) => {
   // Return categories with basic info (without full lever details for lightweight listing)
   const categories = POLICY_CATEGORIES.map(c => ({
@@ -34,7 +35,13 @@ app.get('/api/categories', (req, res) => {
     name_hi: c.name_hi,
     name_ta: c.name_ta,
     icon: c.icon,
-    description: c.description
+    description: c.description,
+    ministry: c.ministry,
+    ministry_hi: c.ministry_hi,
+    ministry_ta: c.ministry_ta,
+    budget: c.budget,
+    budget_num: c.budget_num,
+    budget_source: c.budget_source
   }));
   res.json({ success: true, categories });
 });
@@ -49,14 +56,16 @@ app.post('/api/policy/generate-sliders', async (req, res) => {
     if (categories && categories.length > 0) {
       const selectedCats = POLICY_CATEGORIES.filter(c => categories.includes(c.id));
       if (selectedCats.length > 0) {
-        // Combine levers from selected categories (take all from each, up to ~15 total)
+        // Combine levers from selected categories
         let combinedLevers = [];
         selectedCats.forEach(cat => {
           if (cat.relatedLevers) {
             combinedLevers.push(...cat.relatedLevers.map(l => ({
               ...l,
               categoryId: cat.id,
-              categoryName: cat.name
+              categoryName: cat.name,
+              categoryMinistry: cat.ministry,
+              categoryBudget: cat.budget
             })));
           }
         });
@@ -77,11 +86,39 @@ app.post('/api/policy/generate-sliders', async (req, res) => {
   }
 });
 
-// 4. POST /api/policy/evaluate - Run LLM-powered policy impact analysis
+// 4. POST /api/policy/evaluate - Run Evidence-Based Policy Impact Analysis
 // Body: { mode, policy_name, description, categories, levers, language }
 app.post('/api/policy/evaluate', async (req, res) => {
   try {
     const { mode, policy_name, description, categories, levers, language } = req.body;
+
+    // 1. Delegate to Python FastAPI Evidence & Retrieval Engine (Port 8000)
+    try {
+      const fastApiRes = await fetch(`${FASTAPI_URL}/api/policy/evaluate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode,
+          policy_name,
+          description,
+          categories,
+          levers,
+          language: language || 'en'
+        }),
+        signal: AbortSignal.timeout(120000)
+      });
+
+      if (fastApiRes.ok) {
+        const data = await fastApiRes.json();
+        if (data.success && data.simulation) {
+          return res.json(data);
+        }
+      }
+    } catch (fastApiErr) {
+      console.warn('FastAPI evidence pipeline unavailable, using direct Ollama service:', fastApiErr.message);
+    }
+
+    // 2. Direct Ollama Service Fallback
     const result = await evaluatePolicy({
       mode,
       policyName: policy_name,
@@ -90,7 +127,13 @@ app.post('/api/policy/evaluate', async (req, res) => {
       levers,
       language: language || 'en'
     });
-    res.json({ success: true, simulation: result.simulation, ai_guidance: result.ai_guidance });
+    res.json({
+      success: true,
+      simulation: result.simulation,
+      ai_guidance: result.ai_guidance,
+      budget_calculation: result.budget_calculation,
+      report: result.report
+    });
   } catch (err) {
     console.error('Policy evaluation error:', err);
     res.status(500).json({ success: false, error: err.message });
@@ -110,8 +153,6 @@ app.post('/api/policy/optimize', async (req, res) => {
 });
 
 // 6. Forward /api/pipeline requests to Python FastAPI Retrieval Engine (Port 8000)
-const FASTAPI_URL = process.env.FASTAPI_TARGET || 'http://127.0.0.1:8000';
-
 app.all('/api/pipeline*', async (req, res) => {
   try {
     const targetUrl = `${FASTAPI_URL}${req.originalUrl}`;

@@ -1,9 +1,11 @@
 """
 Controlled Information Retrieval - Source Controller & Hierarchy Enforcement
-Enforces strict domain allowlist and Tier 1-4 source credibility hierarchy for Indian Policy Impact Analysis.
+Enforces strict domain allowlist, Tier 1-3 source credibility hierarchy, and SSRF protection for Indian Policy Impact Analysis.
 """
 
 from urllib.parse import urlparse
+import ipaddress
+import socket
 from typing import Dict, Any, List, Optional, Tuple
 
 # Tier 1 - Primary Government & Statutory Authorities (Preferred for Quantitative Engine)
@@ -78,11 +80,48 @@ TIER_3_DOMAINS = [
 # Master Allowlist Configuration
 ALLOWED_DOMAINS = list(set(TIER_1_DOMAINS + TIER_2_DOMAINS + TIER_3_DOMAINS))
 
+BLOCKED_IP_NETWORKS = [
+    ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("169.254.0.0/16"),
+    ipaddress.ip_network("0.0.0.0/8"),
+    ipaddress.ip_network("::1/128"),
+    ipaddress.ip_network("fc00::/7"),
+    ipaddress.ip_network("fe80::/10"),
+]
+
 class SourceController:
-    """Controls source domain permissions, checks hierarchy tiers, and blocks unauthorized retrieval."""
+    """Controls source domain permissions, checks hierarchy tiers, and blocks unauthorized/SSRF retrieval."""
 
     def __init__(self, custom_allowed_domains: Optional[List[str]] = None):
         self.allowed_domains = set(custom_allowed_domains or ALLOWED_DOMAINS)
+
+    def is_ssrf_safe(self, url: str) -> bool:
+        """Verifies URL is not targeting localhost, private network, or unsafe schemes."""
+        if not url:
+            return False
+        parsed = urlparse(url)
+        if parsed.scheme.lower() not in ("http", "https"):
+            return False
+
+        hostname = (parsed.hostname or "").lower()
+        if not hostname or hostname in ("localhost", "127.0.0.1", "0.0.0.0", "::1"):
+            return False
+
+        # Check if hostname is raw IP
+        try:
+            ip = ipaddress.ip_address(hostname)
+            for net in BLOCKED_IP_NETWORKS:
+                if ip in net:
+                    return False
+        except ValueError:
+            # Domain name, check for direct local names
+            if hostname.endswith(".local") or hostname.endswith(".internal"):
+                return False
+
+        return True
 
     def extract_domain(self, url: str) -> str:
         """Extracts normalized hostname/domain from URL."""
@@ -92,13 +131,15 @@ class SourceController:
             url = "https://" + url
         parsed = urlparse(url)
         netloc = parsed.netloc.lower()
-        # strip port if present
         if ":" in netloc:
             netloc = netloc.split(":")[0]
         return netloc
 
     def is_domain_allowed(self, url: str) -> bool:
-        """Checks if a URL belongs to the approved domain allowlist (including subdomains)."""
+        """Checks if a URL belongs to the approved domain allowlist (including subdomains) and is SSRF-safe."""
+        if not self.is_ssrf_safe(url):
+            return False
+
         domain = self.extract_domain(url)
         if not domain:
             return False
@@ -146,9 +187,20 @@ class SourceController:
                     "source_type": source_type,
                     "is_allowed": True
                 })
-        # Sort by credibility tier (Tier 1 first)
         valid_results.sort(key=lambda x: x["tier"])
         return valid_results
+
+    def verify_source(self, source_id_or_url: str) -> Dict[str, Any]:
+        """Verifies credibility, tier, and provenance of a source URL or identifier."""
+        is_allowed = self.is_domain_allowed(source_id_or_url)
+        tier, desc = self.get_source_tier_info(source_id_or_url) if is_allowed else (4, "Unverified or Blocked")
+        return {
+            "source": source_id_or_url,
+            "is_allowed": is_allowed,
+            "ssrf_safe": self.is_ssrf_safe(source_id_or_url),
+            "tier": tier,
+            "description": desc
+        }
 
 # Global Singleton instance
 source_controller = SourceController()

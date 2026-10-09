@@ -1,42 +1,49 @@
 """
-Controlled Web Retriever: Search Agent & Webpage Content Fetcher.
-Enforces domain allowlist, extracts clean article text, preserves headings and tables, and detects PDF attachments.
+Controlled Web Retriever: Search Agent, Webpage Content Fetcher & Document Analysis Tools.
+Enforces domain allowlist, SSRF protection, extracts clean article text, preserves headings and tables,
+and provides standalone tools for PDF downloading, parsing, and evidence research.
 """
 
-import httpx
+import os
 import re
 import urllib.parse
+from typing import List, Dict, Any, Optional
+
+import httpx
 from bs4 import BeautifulSoup
 import trafilatura
-from typing import List, Dict, Any, Optional
+import pymupdf  # PyMuPDF
 from backend.retrieval.source_controller import source_controller, TIER_1_DOMAINS
 
+CACHE_DIR = "backend/data_store/pdf_cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
+
 class WebRetriever:
-    """Safely searches allowed web domains and extracts structured webpage contents."""
+    """Safely searches allowed web domains and provides publication-grade research tools."""
 
     def __init__(self):
         self.headers = {
             "User-Agent": "AIPolicyImpactSimulator/1.0 (Government of India Policy Research Bot; +https://data.gov.in)"
         }
 
-    async def search_web(self, query: str, max_results: int = 8) -> List[Dict[str, Any]]:
+    async def search_web(self, query: str, allowed_domains: Optional[List[str]] = None, max_results: int = 8) -> List[Dict[str, Any]]:
         """
         Executes a targeted search restricted to approved Government & Academic domains.
         Returns ranked and filtered search results.
         """
-        # Enhance query with site-restriction targeting Tier 1 domains
         approved_sites = ["site:gov.in", "site:nic.in", "site:niti.gov.in", "site:rbi.org.in", "site:worldbank.org"]
+        if allowed_domains:
+            approved_sites = [f"site:{d}" for d in allowed_domains]
+
         encoded_query = urllib.parse.quote(query)
-        
         results: List[Dict[str, Any]] = []
 
-        # 1. Primary: Query DuckDuckGo HTML / Lite API with strict domain filtering
         search_urls = [
-            f"https://html.duckduckgo.com/html/?q={encoded_query}+{'+OR+'.join(approved_sites)}",
+            f"https://html.duckduckgo.com/html/?q={encoded_query}+{'+OR+'.join(approved_sites[:4])}",
             f"https://html.duckduckgo.com/html/?q={encoded_query}+India+policy+evaluation"
         ]
 
-        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True, headers=self.headers) as client:
+        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True, headers=self.headers) as client:
             for s_url in search_urls:
                 try:
                     resp = await client.get(s_url)
@@ -48,7 +55,6 @@ class WebRetriever:
                             
                             if title_elem and title_elem.get("href"):
                                 raw_url = title_elem["href"]
-                                # Unescape duckduckgo redirect url if needed
                                 if "uddg=" in raw_url:
                                     m = re.search(r"uddg=([^&]+)", raw_url)
                                     if m:
@@ -74,37 +80,32 @@ class WebRetriever:
                 if len(results) >= max_results:
                     break
 
-        # Fallback to curated official Indian Policy Evaluation knowledge nodes if web is offline/rate-limited
         if not results:
             results = self._get_curated_fallback_search(query)
 
-        # Sort by Tier (Tier 1 first)
         results.sort(key=lambda x: x["tier"])
         return results[:max_results]
 
     async def fetch_webpage(self, url: str) -> Dict[str, Any]:
         """
-        Fetches webpage content from an approved domain, stripping navigation noise
-        and preserving structured headings, tables, and PDF links.
+        Fetches webpage content from an approved domain, validating SSRF safety and domain allowlist.
         """
         if not source_controller.is_domain_allowed(url):
             return {
                 "url": url,
-                "error": "Domain not in approved allowlist",
+                "error": "Domain not in approved allowlist or failed SSRF check",
                 "success": False
             }
 
         tier, source_type = source_controller.get_source_tier_info(url)
 
         try:
-            async with httpx.AsyncClient(timeout=15.0, follow_redirects=True, headers=self.headers) as client:
+            async with httpx.AsyncClient(timeout=12.0, follow_redirects=True, headers=self.headers) as client:
                 resp = await client.get(url)
                 if resp.status_code != 200:
                     return {"url": url, "error": f"HTTP {resp.status_code}", "success": False}
 
                 html_content = resp.text
-                
-                # Check for direct PDF redirect or PDF content-type
                 content_type = resp.headers.get("content-type", "")
                 if "application/pdf" in content_type or url.lower().endswith(".pdf"):
                     return {
@@ -115,7 +116,6 @@ class WebRetriever:
                         "source_type": source_type
                     }
 
-                # Extract clean article text using trafilatura
                 extracted_text = trafilatura.extract(
                     html_content,
                     include_tables=True,
@@ -126,7 +126,6 @@ class WebRetriever:
                 soup = BeautifulSoup(html_content, "html.parser")
                 title = soup.title.get_text(strip=True) if soup.title else url
 
-                # Discover relevant PDF links inside the page
                 pdf_links = []
                 for a in soup.find_all("a", href=True):
                     href = urllib.parse.urljoin(url, a["href"])
@@ -134,7 +133,6 @@ class WebRetriever:
                         if href not in pdf_links:
                             pdf_links.append(href)
 
-                # Extract tables
                 tables_data = []
                 for table in soup.find_all("table")[:5]:
                     rows = []
@@ -163,6 +161,91 @@ class WebRetriever:
                 "error": str(e),
                 "success": False
             }
+
+    async def discover_relevant_links(self, url: str) -> List[str]:
+        """Discovers authorized government reports and publication links on a target page."""
+        page = await self.fetch_webpage(url)
+        if not page.get("success"):
+            return []
+        return page.get("pdf_links", [])
+
+    async def download_pdf(self, url: str, dest_path: Optional[str] = None) -> Optional[str]:
+        """Downloads an authorized PDF from an approved domain to a cached location."""
+        if not source_controller.is_domain_allowed(url):
+            raise ValueError(f"URL {url} violates domain allowlist or SSRF policy.")
+
+        parsed = urllib.parse.urlparse(url)
+        safe_fname = re.sub(r"[^a-zA-Z0-9_\.]", "_", os.path.basename(parsed.path) or "document.pdf")
+        if not safe_fname.endswith(".pdf"):
+            safe_fname += ".pdf"
+
+        target_file = dest_path or os.path.join(CACHE_DIR, safe_fname)
+        if os.path.exists(target_file) and os.path.getsize(target_file) > 1000:
+            return target_file
+
+        async with httpx.AsyncClient(timeout=25.0, follow_redirects=True, headers=self.headers) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                with open(target_file, "wb") as f:
+                    f.write(resp.content)
+                return target_file
+
+        return None
+
+    def extract_pdf_text(self, file_path: str, max_pages: int = 50) -> str:
+        """Extracts text content across pages of a PDF document."""
+        if not os.path.exists(file_path):
+            return ""
+        doc = pymupdf.open(file_path)
+        pages_text = []
+        for p in range(min(len(doc), max_pages)):
+            t = doc[p].get_text("text").strip()
+            if t:
+                pages_text.append(f"[Page {p+1}]\n{t}")
+        return "\n\n".join(pages_text)
+
+    def extract_pdf_tables(self, file_path: str, max_pages: int = 50) -> List[List[List[str]]]:
+        """Extracts structured tables from a PDF using PyMuPDF table finder."""
+        if not os.path.exists(file_path):
+            return []
+        doc = pymupdf.open(file_path)
+        tables = []
+        for p in range(min(len(doc), max_pages)):
+            page = doc[p]
+            try:
+                tf = page.find_tables()
+                if tf and tf.tables:
+                    for t in tf.tables:
+                        ext = t.extract()
+                        if ext and len(ext) > 1:
+                            tables.append(ext)
+            except Exception:
+                pass
+        return tables
+
+    async def extract_web_tables(self, url: str) -> List[List[List[str]]]:
+        """Extracts tables directly from a webpage."""
+        page = await self.fetch_webpage(url)
+        return page.get("tables", [])
+
+    async def search_research_evidence(self, query: str) -> List[Dict[str, Any]]:
+        """Finds research evidence across approved sources and formats it as verified findings."""
+        results = await self.search_web(query, max_results=6)
+        evidence_items = []
+        for r in results:
+            evidence_items.append({
+                "title": r["title"],
+                "url": r["url"],
+                "domain": r["domain"],
+                "snippet": r["snippet"],
+                "tier": r["tier"],
+                "source_type": r["source_type"]
+            })
+        return evidence_items
+
+    def verify_source(self, source_id: str) -> Dict[str, Any]:
+        """Verifies credibility, tier, and provenance of a source URL."""
+        return source_controller.verify_source(source_id)
 
     def _get_curated_fallback_search(self, query: str) -> List[Dict[str, Any]]:
         """Provides verified Government of India & NITI Aayog repository references for Indian policy domains."""
@@ -218,7 +301,6 @@ class WebRetriever:
             }
         ]
 
-        # Score and filter by match
         scored = []
         for doc in curated_library:
             score = 0

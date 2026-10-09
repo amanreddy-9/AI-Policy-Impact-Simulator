@@ -43,3 +43,18 @@ backend/data_store/*.sqlite3-shm
 
 # Vercel
 .vercel
+
+# Archive zip files
+*.zip
+
+# Symlinks
+AIPolicySimulator
+
+# Scratch inspect
+scratch_inspect/
+# Generated sample test files & build scripts
+test_sub.pdf
+test_sub.png
+build_clean_report_v3.py
+build_full_report.py
+build_full_report_v2.py
