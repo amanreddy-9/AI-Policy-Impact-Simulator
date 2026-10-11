@@ -1,4 +1,6 @@
-export const INDIA_STATES = [
+import { STATE_PERFORMANCE_BY_ID } from './statesPerformanceData';
+
+const BASE_STATES = [
   { id: 'JK', abbr: 'JK', name: 'Jammu & Kashmir', region: 'North', baselineHdi: 0.68, baselinePoverty: 12.6, pop: 13.6 },
   { id: 'HP', abbr: 'HP', name: 'Himachal Pradesh', region: 'North', baselineHdi: 0.72, baselinePoverty: 7.6, pop: 7.5 },
   { id: 'PB', abbr: 'PB', name: 'Punjab', region: 'North', baselineHdi: 0.70, baselinePoverty: 8.3, pop: 30.1 },
@@ -30,3 +32,22 @@ export const INDIA_STATES = [
   { id: 'TR', abbr: 'TR', name: 'Tripura', region: 'North-East', baselineHdi: 0.66, baselinePoverty: 14.0, pop: 4.1 },
   { id: 'ML', abbr: 'ML', name: 'Meghalaya', region: 'North-East', baselineHdi: 0.65, baselinePoverty: 22.0, pop: 3.3 }
 ];
+
+export const INDIA_STATES = BASE_STATES.map((st) => {
+  const code = st.abbr === 'UK' ? 'UK' : (st.abbr === 'CG' ? 'CG' : st.id);
+  const perf = STATE_PERFORMANCE_BY_ID[code] || {};
+  return {
+    ...st,
+    gsdp_2023_24_cr: perf.gsdp_current_2023_24_cr || null,
+    gsdp_2024_25_be_cr: perf.gsdp_current_2024_25_be_cr || null,
+    total_debt_2024_cr: perf.total_debt_liabilities_2024_cr || null,
+    total_debt_2025_be_cr: perf.total_debt_liabilities_2025_be_cr || null,
+    debt_to_gsdp_pct: perf.debt_to_gsdp_ratio_pct || null,
+    sdg_score_2024: perf.sdg_score_2024 || null,
+    sdg_category: perf.sdg_category || null,
+    gross_fiscal_deficit_2025_be_cr: perf.gross_fiscal_deficit_2024_25_be_cr || null,
+    own_tax_revenue_2025_be_cr: perf.own_tax_revenue_2024_25_be_cr || null,
+    capital_outlay_2025_be_cr: perf.capital_outlay_2024_25_be_cr || null,
+    off_budget_borrowings_2023_24_cr: perf.off_budget_borrowings_2023_24_cr || 0
+  };
+});

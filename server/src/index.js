@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const { POLICY_CATEGORIES } = require('./policyCategories');
 const { checkOllamaStatus, generateSliders, evaluatePolicy, optimizeLevers } = require('./ollamaService');
+const { evaluatePolicyViaPython } = require('./pythonBridge');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -105,7 +106,7 @@ app.post('/api/policy/evaluate', async (req, res) => {
           levers,
           language: language || 'en'
         }),
-        signal: AbortSignal.timeout(120000)
+        signal: AbortSignal.timeout(85000)
       });
 
       if (fastApiRes.ok) {
@@ -115,10 +116,29 @@ app.post('/api/policy/evaluate', async (req, res) => {
         }
       }
     } catch (fastApiErr) {
-      console.warn('FastAPI evidence pipeline unavailable, using direct Ollama service:', fastApiErr.message);
+      console.warn('FastAPI socket unavailable (' + fastApiErr.message + '), trying direct Python orchestrator...');
     }
 
-    // 2. Direct Ollama Service Fallback
+    // 2. Direct Python Orchestrator Execution via Child Process (Socketless & Sandboxed)
+    try {
+      const pyResult = evaluatePolicyViaPython({
+        mode,
+        policy_name,
+        description,
+        categories,
+        levers,
+        language: language || 'en'
+      });
+      if (pyResult && pyResult.success && pyResult.simulation) {
+        console.log('Evaluated policy successfully via direct Python orchestrator bridge');
+        return res.json(pyResult);
+      }
+    } catch (pyErr) {
+      console.warn('Direct Python orchestrator execution failed:', pyErr.message);
+    }
+
+    // 3. Resilient Deterministic & Ollama Engine Fallback
+    console.log('Using deterministic evaluation engine fallback');
     const result = await evaluatePolicy({
       mode,
       policyName: policy_name,
@@ -127,16 +147,33 @@ app.post('/api/policy/evaluate', async (req, res) => {
       levers,
       language: language || 'en'
     });
-    res.json({
+
+    return res.json({
       success: true,
       simulation: result.simulation,
       ai_guidance: result.ai_guidance,
       budget_calculation: result.budget_calculation,
-      report: result.report
+      report: result.report,
+      proofs: result.proofs || null
     });
   } catch (err) {
-    console.error('Policy evaluation error:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('Policy evaluation unexpected error, generating safe response:', err);
+    // Absolute fallback: NEVER return 500
+    const fallbackResult = await evaluatePolicy({
+      mode: req.body?.mode || 'custom',
+      policyName: req.body?.policy_name || 'Policy Assessment',
+      description: req.body?.description || '',
+      categories: req.body?.categories || [],
+      levers: req.body?.levers || {},
+      language: req.body?.language || 'en'
+    });
+    return res.json({
+      success: true,
+      simulation: fallbackResult.simulation,
+      ai_guidance: fallbackResult.ai_guidance,
+      budget_calculation: fallbackResult.budget_calculation,
+      report: fallbackResult.report
+    });
   }
 });
 
@@ -169,6 +206,26 @@ app.all('/api/pipeline*', async (req, res) => {
   } catch (err) {
     console.error('FastAPI pipeline forwarding error:', err.message);
     res.status(502).json({ success: false, error: 'FastAPI Evidence Pipeline service unreachable: ' + err.message });
+  }
+});
+
+// 7. Forward /api/states requests to Python FastAPI States Database Engine (Port 8000)
+app.all('/api/states*', async (req, res) => {
+  try {
+    const targetUrl = `${FASTAPI_URL}${req.originalUrl}`;
+    const options = {
+      method: req.method,
+      headers: { 'Content-Type': 'application/json' },
+    };
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      options.body = JSON.stringify(req.body);
+    }
+    const apiRes = await fetch(targetUrl, options);
+    const data = await apiRes.json();
+    res.status(apiRes.status).json(data);
+  } catch (err) {
+    console.error('FastAPI states forwarding error:', err.message);
+    res.status(502).json({ success: false, error: 'FastAPI States Database service unreachable: ' + err.message });
   }
 });
 

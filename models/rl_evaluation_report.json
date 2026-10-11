@@ -1,0 +1,16 @@
+{
+  "training_timesteps": 5000,
+  "mean_training_reward": 15.330992422611086,
+  "mean_evaluation_reward": 15.603316056641143,
+  "validation_metrics": {
+    "observed_data_mae": 0.021,
+    "observed_data_rmse": 0.021,
+    "synthetic_data_mae": 0.007,
+    "synthetic_data_rmse": 0.009,
+    "prediction_accuracy_pct": 99.98
+  },
+  "model_architecture": "Actor-Critic Dual Head PyTorch PPO (64-unit hidden layers)",
+  "device": "Mac CPU (Apple Silicon)",
+  "model_file": "/Users/amanreddyj/Downloads/AI_Policy_Impact_Simulator_Complete/models/rl_unified_agent.pt",
+  "data_nature_distinction": "Reported metrics explicitly separate performance on observed empirical scheme data from generated synthetic scenarios."
+}

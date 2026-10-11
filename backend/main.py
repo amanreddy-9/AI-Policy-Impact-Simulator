@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from backend.api import simulation, causal, rl, graph, llm_policy, evidence_pipeline
+from backend.api import simulation, causal, rl, graph, llm_policy, evidence_pipeline, categories_router, states_router
 
 root_dir = Path(__file__).resolve().parents[1]
 
@@ -21,12 +21,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(categories_router.router, prefix="/api")
 app.include_router(simulation.router, prefix="/api")
 app.include_router(causal.router, prefix="/api")
 app.include_router(rl.router, prefix="/api")
 app.include_router(graph.router, prefix="/api")
 app.include_router(llm_policy.router, prefix="/api/policy")
 app.include_router(evidence_pipeline.router, prefix="/api")
+app.include_router(states_router.router, prefix="/api")
 
 if (root_dir / "css").exists():
     app.mount("/css", StaticFiles(directory=root_dir / "css"), name="css")

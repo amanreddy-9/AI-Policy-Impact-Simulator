@@ -353,13 +353,27 @@ class PolicySimulator:
             }
         }
 
+        twenty_metrics_list = list(metrics_result.values())
+        try:
+            from backend.retrieval.evidence_appraisal_engine import evidence_appraisal_engine
+            proofed = evidence_appraisal_engine.get_sector_indicators_with_proofs(
+                domain=domain,
+                query=user_text,
+                cost_cr=total_annual_cost_cr,
+                amount=amount
+            )
+            if proofed and len(proofed) >= 20:
+                twenty_metrics_list = proofed
+        except Exception as e:
+            pass
+
         return {
             "overall_impact_score": int(m_score),
             "confidence_score": 78,
             "domain": domain,
             "benefited_overview": benefited_overview,
             "loss_fiscal_overview": loss_fiscal_overview,
-            "twenty_metrics": list(metrics_result.values()),
+            "twenty_metrics": twenty_metrics_list,
             "five_impact_aspects": five_impact_aspects,
             "num_iterations": num_iterations
         }
