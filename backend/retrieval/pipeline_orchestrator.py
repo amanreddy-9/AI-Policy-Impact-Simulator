@@ -222,7 +222,21 @@ class PipelineOrchestrator:
         )
 
         report = {}
-        # Synthesize and merge comprehensive 9-section publication report fields
+        # 1. Live Groq 120B Cognitive Synthesis
+        try:
+            officer_prompt = online_analyst._build_officer_prompt(
+                policy_text=user_policy_query,
+                budget_calc=budget_calc,
+                simulation_results=sim_res,
+                evidence_items=combined_evidence
+            )
+            groq_report = await online_analyst.generate_with_groq(officer_prompt)
+            if isinstance(groq_report, dict) and groq_report:
+                report.update(groq_report)
+        except Exception as e:
+            print(f"Live Groq generation fallback notice: {e}")
+
+        # 2. Synthesize and merge comprehensive 9-section publication report fields
         expert_sections = online_analyst.generate_expert_fallback(
             policy_text=user_policy_query,
             budget_calc=budget_calc,
@@ -230,9 +244,10 @@ class PipelineOrchestrator:
             evidence_items=combined_evidence
         )
         for k, v in expert_sections.items():
-            report[k] = v
+            if not report.get(k):
+                report[k] = v
 
-        # Merge appraisal_dossier (tax_changes_needed, feasibility_verdict, appraisal_proofs, twenty_metrics) into report
+        # 3. Merge appraisal_dossier (tax_changes_needed, feasibility_verdict, appraisal_proofs, twenty_metrics) into report
         for k, v in appraisal_dossier.items():
             report[k] = v
 
@@ -337,10 +352,9 @@ class PipelineOrchestrator:
             "is_synthetic_data": data_nature == "synthetic"
         }
 
-        # Ensure complete multi-phase evaluation window (~52s) so that
-        # Groq 120B synthesis and multi-source research are thoroughly digested
+        # Fast, responsive response window
         elapsed_sec = asyncio.get_event_loop().time() - pipeline_start_time
-        target_eval_duration = 52.0
+        target_eval_duration = 1.0
         if elapsed_sec < target_eval_duration:
             await asyncio.sleep(target_eval_duration - elapsed_sec)
 
